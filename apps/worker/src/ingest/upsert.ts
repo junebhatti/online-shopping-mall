@@ -32,7 +32,9 @@ export async function upsertListing(l: NormalizedListing, counts: RunCounts): Pr
       status: "active",
       lastSeenAt: now,
       updatedAt: now,
-      ...(priceChanged ? { gate: "pending" as const, gateReason: null } : {}),
+      // Fresh data (sizes sell out, prices move) always goes back through the gate.
+      gate: "pending" as const,
+      gateReason: null,
     })
     .where(orm.eq(listings.id, existing.id));
   if (priceChanged) {

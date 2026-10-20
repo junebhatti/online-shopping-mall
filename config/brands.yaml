@@ -5,10 +5,11 @@
 #   Everything else is blocked (403) or not Shopify; those brands come in through eBay
 #   and resale until department-store and retailer adapters exist (Phase 4).
 # sale_only: only admit marked-down items. menswear_only: unlabeled products count as men's.
+# aliases: other names retailers file the brand under (Yoox uses "Polo Ralph Lauren").
 
 clothing:
   - { name: Buck Mason,            kind: new,  site: https://www.buckmason.com }
-  - { name: Ralph Lauren,          kind: new,  site: https://www.ralphlauren.com }
+  - { name: Ralph Lauren,          kind: new,  site: https://www.ralphlauren.com, aliases: [Polo Ralph Lauren] }
   - { name: Nudie Jeans,           kind: new,  site: https://www.nudiejeans.com }
   - { name: Carhartt,              kind: new,  site: https://www.carhartt.com }
   - { name: Basketcase Gallery,    kind: new,  site: https://basketcasegallery.com }

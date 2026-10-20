@@ -1,0 +1,11 @@
+# Retailer search endpoints that need public configuration.
+
+# Yoox's storefront searches through Algolia with a public, search-only key that its web app
+# ships to every browser (found in __NEXT_DATA__ at props.pageProps.initialState.applicationInfo.algolia
+# on https://www.yoox.com/us/men/sale/shoponline). If searches start returning 403, open that page in a
+# browser, read the new key there, and update it here.
+yoox:
+  app_id: UILB72FSNV
+  search_key: 7fbacd0b950c97ae315987c2d7abbe08
+  index: REPLICA_Latest_YOOX_US_Products
+  department: salemen

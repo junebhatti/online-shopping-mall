@@ -33,6 +33,7 @@ const brandSchema = z.object({
   feed: z.literal("shopify").optional(),
   sale_only: z.boolean().optional(),
   menswear_only: z.boolean().optional(),
+  aliases: z.array(z.string()).optional(),
   note: z.string().optional(),
 });
 
@@ -136,3 +137,11 @@ const watchesSchema = z.array(
 );
 
 export const loadWatches = () => loadYaml("config/watches.yaml", watchesSchema);
+
+const sourcesSchema = z.object({
+  yoox: z.object({ app_id: z.string(), search_key: z.string(), index: z.string(), department: z.string() }),
+});
+
+export type SourcesConfig = z.infer<typeof sourcesSchema>;
+
+export const loadSources = () => loadYaml("config/sources.yaml", sourcesSchema);

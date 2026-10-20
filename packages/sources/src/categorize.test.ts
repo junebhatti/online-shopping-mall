@@ -21,6 +21,14 @@ describe("categorize", () => {
     ["Vintage Adidas Soccer Shorts", "shorts"],
     ["G.H. Bass Weejuns Penny Loafers", "shoes"],
     ["Knit Polo Shirt", "knit"],
+    ["Cotton denim shirts", "shirt"],
+    ["Wool sweaters", "knit"],
+    ["Cotton sweatshirts", "sweatshirt"],
+    ["Polyester puffers", "outerwear"],
+    ["Wool turtlenecks", "knit"],
+    ["Cotton shorts & bermuda shorts", "shorts"],
+    ["Leather belts", "accessory"],
+    ["Cotton denim outerwear", "outerwear"],
   ])("%s -> %s", (title, expected) => {
     expect(c(title)).toBe(expected);
   });

@@ -4,6 +4,7 @@ import { ingestEbay } from "./ingest/ebay.ts";
 import { ingestGrailed } from "./ingest/grailed.ts";
 import { ingestPinterest } from "./ingest/pinterest.ts";
 import { ingestShopify } from "./ingest/shopify.ts";
+import { ingestYoox } from "./ingest/yoox.ts";
 import { syncWatches } from "./ingest/watches.ts";
 import { log } from "./log.ts";
 import { lastOk } from "./runs.ts";
@@ -19,6 +20,7 @@ type Job = { name: string; everyHours: number; run: () => Promise<void> };
 const INGEST: Job[] = [
   { name: "pinterest", everyHours: 24, run: ingestPinterest },
   { name: "shopify", everyHours: 12, run: ingestShopify },
+  { name: "yoox", everyHours: 12, run: ingestYoox },
   { name: "ebay", everyHours: 2, run: ingestEbay },
   { name: "grailed", everyHours: 2, run: ingestGrailed },
 ];

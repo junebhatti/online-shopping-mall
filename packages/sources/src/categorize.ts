@@ -4,25 +4,32 @@ import type { Category, Department } from "@mall/db";
 // "Polo Ralph Lauren Oxford" is a shirt, not a polo, and "Stone Island" isn't stone.
 const BRAND_NOISE = /\b(polo ralph lauren|polo by ralph lauren|polo sport|ralph lauren polo)\b/gi;
 
+// Every garment word accepts a plural: retailers like Yoox name categories "Shirts", "Sweaters".
 const RULES: [Category, RegExp][] = [
   ["fragrance", /\b(eau de|parfum|cologne|edp|edt|fragrance|extrait)\b/],
-  ["underwear", /\b(boxer|boxers|brief|briefs|trunks?|underwear)\b/],
-  ["shoes", /\b(loafers?|sneakers?|shoes?|boots?|runners?|trainers?|derby|derbies|mules?|sandals?|clogs?)\b/],
-  ["accessory", /\b(hat|cap|beanie|bag|tote|backpack|scarf|belt|socks?|gloves?|wallet|bucket hat|duffle|pouch)\b/],
-  ["pants", /\b(sweatpants?|joggers?|track ?pants?)\b/],
-  ["shorts", /\bshorts?\b(?![- ]sleeve)/],
-  ["knit", /\b(sweater|knit|cashmere|merino)\b[^,|]*\bvest\b|\bsweater vest\b/],
+  ["underwear", /\b(boxers?|briefs?|trunks?|underwear)\b/],
+  ["shoes", /\b(loafers?|sneakers?|shoes?|boots?|runners?|trainers?|derby|derbies|mules?|sandals?|clogs?|espadrilles?|slip[- ]ons?)\b/],
+  [
+    "accessory",
+    /\b(hats?|caps?|beanies?|bags?|totes?|backpacks?|scarf|scarves|belts?|socks?|gloves?|wallets?|bucket hats?|duffles?|pouch(es)?|bracelets?|cufflinks?|ties?|cases?)\b/,
+  ],
+  ["pants", /\b(sweatpants?|joggers?|track ?pants?|overalls?)\b/],
+  ["shorts", /\b(shorts?|bermudas?)\b(?![- ]sleeve)/],
+  ["knit", /\b(sweaters?|knit|cashmere|merino)\b[^,|]*\bvests?\b|\bsweater vests?\b/],
   // Clear outerwear words beat everything below; "fleece" alone does not (a fleece hoodie is a sweatshirt).
-  ["outerwear", /\b(jacket|coat|parka|trench|overcoat|topcoat|blazer|sport coat|bomber|anorak|shell|gilet|vest)\b/],
-  ["sweatshirt", /\b(sweatshirt|hoodie|crewneck sweat|pullover sweat|quarter zip|1\/4 zip|half zip)\b/],
-  ["outerwear", /\b(overshirt|shirt jacket|shacket|fleece|chore)\b/],
-  ["knit", /\b(sweater|cardigan|knit|jumper|cashmere|merino|lambswool|pullover)\b/],
-  ["long_sleeve", /\b(long ?sleeves?|l\/s|henley|thermal|waffle)\b/],
-  ["tee", /\b(t-?shirt|tee|tank|ringer)\b/],
-  ["shirt", /\b(shirt|oxford|ocbd|flannel|button[- ]?down|button[- ]?up|camp collar)\b/],
+  [
+    "outerwear",
+    /\b(jackets?|coats?|parkas?|trench(es)?|overcoats?|topcoats?|blazers?|sport coats?|bombers?|anoraks?|shells?|gilets?|vests?|puffers?|outerwear|suits?)\b/,
+  ],
+  ["sweatshirt", /\b(sweatshirts?|hoodies?|crewneck sweat|pullover sweat|quarter zip|1\/4 zip|half zip)\b/],
+  ["outerwear", /\b(overshirts?|shirt jackets?|shackets?|fleece|chore)\b/],
+  ["knit", /\b(sweaters?|cardigans?|knit|knitwear|jumpers?|cashmere|merino|lambswool|pullovers?|turtlenecks?)\b/],
+  ["long_sleeve", /\b(long ?sleeves?|l\/s|henleys?|thermals?|waffle)\b/],
+  ["tee", /\b(t-?shirts?|tees?|tanks?|ringers?)\b/],
+  ["shirt", /\b(shirts?|oxfords?|ocbd|flannels?|button[- ]?downs?|button[- ]?ups?|camp collar)\b/],
   ["denim", /\b(jeans?|denim|selvedge|501|505)\b/],
   ["pants", /\b(pants?|trousers?|chinos?|slacks|khakis?|cargos?|carpenter|fatigues?)\b/],
-  ["tee", /\bpolo\b/],
+  ["tee", /\bpolos?\b/],
 ];
 
 export function categorize(text: string, department: Department): Category {
