@@ -52,12 +52,12 @@ export function Tile({ tile: t, owner, showPrice = true, hideOnNot = true, alway
             src={t.image}
             alt=""
             loading="lazy"
-            className="h-[86%] w-[86%] object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+            className="mt-[8%] h-[76%] w-[76%] object-contain transition-transform duration-300 group-hover:scale-[1.02]"
             style={{ mixBlendMode: t.hasCutout ? "normal" : ("var(--tile-blend)" as React.CSSProperties["mixBlendMode"]) }}
           />
         </Link>
         {labels.length ? (
-          <div className="tnum caps pointer-events-none absolute left-2 top-[7px] flex flex-col gap-0.5 text-[9px] tracking-[0.08em]">
+          <div className="tnum caps pointer-events-none absolute left-2 right-9 top-[7px] flex flex-wrap gap-x-2 gap-y-0.5 text-[9px] tracking-[0.08em]">
             {labels.map((l) => (
               <span key={l.text} className={l.accent ? "text-accent-ink" : "text-ink-muted"}>
                 {l.text}
