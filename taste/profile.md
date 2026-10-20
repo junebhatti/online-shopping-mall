@@ -31,7 +31,8 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
   about whole garments in neon or busy patterns, not lightness or a peek of red.
 - **Shoes:** penny and horsebit loafers; retro runners and classic sneakers (New Balance, Sambas, Converse).
 - **Outerwear:** chore and work jackets; wool overcoats and unstructured blazers; fleece and
-  technical shells (Patagonia, Arc'teryx, Stone Island). Not leather or suede jackets.
+  technical shells (Patagonia, Arc'teryx, Stone Island). Leather wasn't picked in the questions,
+  but a worn brown leather bomber is pinned: vintage leather is fine, faux leather is out.
 - **Patterns:** pinstripe and chalk stripe, plaid and check (flannel, tartan, gingham); otherwise
   solids. No Fair Isle or argyle.
 - **Materials:** wool and tropical wool, heavy cotton (loopwheel, duck, chino twill), cashmere
@@ -49,6 +50,23 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
 - **Price ceilings (new, per piece):** tees $80, pants $250, outerwear $500. Luxury only on sale.
 - **Denim:** raw/selvedge and washed vintage. No black denim called out.
 - **Palette:** earth tones (olive, brown, tan, rust, khaki) and navy/indigo.
+
+## From the Pinterest boards (Claude's read of clothes + outfits, 40 pins, 2026-10-20)
+Confirm or correct; this is a draft.
+- **Stand-collar and French work jackets dominate:** navy, olive and brown wool or canvas, boxy,
+  cropped to the hip, patch pockets, sometimes contrast buttons. The single strongest signal.
+- **Striped and textured knits:** fine horizontal stripes (grey with red, olive with brown),
+  chunky brown knits with a single contrast stripe, plain navy and oatmeal crewnecks with a
+  slightly cropped, wide body. Stripes clearly pass, alongside plaid and pinstripe.
+- **Proportion:** close-fitting tops (black tees, tanks, ribbed henleys, fitted knits) over very
+  wide trousers or jeans that pool at the shoe. Dark rinse wide jeans, charcoal pleated wool,
+  black and grey baggy trousers, washed tan wide pants.
+- **Sporty vintage:** adidas soccer shorts, a vintage football shirt, a Polo flag hoodie, a
+  graphic long sleeve. Vintage athletic pieces are a real lane, logos allowed there.
+- **Shoes:** slim retro leather sneakers (Puma Speedcat style), loafers including worn and
+  textured ones, leather mules and clogs, minimal black sandals.
+- **Mood boards** (vibes + aesthetic, scrapbook): interiors with books and warm wood, outdoors,
+  film and travel. Shown in Inspiration, not used for scoring.
 
 ## Owned references (bought recently; match the feeling, not the exact item)
 - Vintage Woolrich charcoal heather long-sleeve blank crew tee, M, Depop, $18, excellent

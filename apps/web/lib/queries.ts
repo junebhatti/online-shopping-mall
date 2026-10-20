@@ -63,7 +63,7 @@ export type InspoCard =
 /** Inspiration: clothing-board pins and listings marked "inspo", interleaved, no prices. */
 export async function inspiration(): Promise<InspoCard[]> {
   const boards = Object.entries(loadPinterest().boards)
-    .filter(([, use]) => use === "clothing")
+    .filter(([, use]) => use === "clothing" || use === "mood")
     .map(([slug]) => slug);
   const pinRows = await db()
     .select()

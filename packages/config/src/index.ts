@@ -11,7 +11,7 @@ import type { Category, Department } from "@mall/db";
 function findRepoRoot(): string {
   if (process.env.MALL_ROOT) return process.env.MALL_ROOT.replace(/\/?$/, "/");
   for (let dir = process.cwd(); ; dir = dirname(dir)) {
-    if (existsSync(join(dir, "config", "brands.yaml"))) return `${dir}/`;
+    if (existsSync(/*turbopackIgnore: true*/ join(dir, "config", "brands.yaml"))) return `${dir}/`;
     if (dirname(dir) === dir) throw new Error(`config/brands.yaml not found above ${process.cwd()}; set MALL_ROOT`);
   }
 }
@@ -20,7 +20,8 @@ export const REPO_ROOT = findRepoRoot();
 
 function loadYaml<T>(file: string, schema: z.ZodType<T>): T {
   const path = `${REPO_ROOT}${file}`;
-  const parsed = schema.safeParse(parse(readFileSync(path, "utf8")));
+  // next.config.ts ships config/ and taste/ with the build, so the bundler needn't trace these reads.
+  const parsed = schema.safeParse(parse(readFileSync(/*turbopackIgnore: true*/ path, "utf8")));
   if (!parsed.success) throw new Error(`Invalid ${file}: ${parsed.error.message}`);
   return parsed.data;
 }
@@ -98,7 +99,7 @@ export const loadQueries = () => loadYaml("config/queries.yaml", queriesSchema);
 
 const pinterestSchema = z.object({
   username: z.string(),
-  boards: z.record(z.string(), z.enum(["clothing", "home", "design", "ignore"])),
+  boards: z.record(z.string(), z.enum(["clothing", "mood", "home", "design", "ignore"])),
 });
 
 export const loadPinterest = () => loadYaml("config/pinterest.yaml", pinterestSchema);
@@ -123,4 +124,15 @@ export type TasteConfig = z.infer<typeof tasteSchema>;
 
 export const loadTaste = () => loadYaml("config/taste.yaml", tasteSchema);
 
-export const readTasteProfile = () => readFileSync(`${REPO_ROOT}taste/profile.md`, "utf8");
+export const readTasteProfile = () => readFileSync(/*turbopackIgnore: true*/ `${REPO_ROOT}taste/profile.md`, "utf8");
+
+const watchesSchema = z.array(
+  z.object({
+    label: z.string().min(1),
+    query: z.string().min(1),
+    department: z.enum(["clothing", "fragrance", "essentials"]),
+    max_price_usd: z.number().positive().optional(),
+  }),
+);
+
+export const loadWatches = () => loadYaml("config/watches.yaml", watchesSchema);

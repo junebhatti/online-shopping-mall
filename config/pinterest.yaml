@@ -1,12 +1,14 @@
 # Pinterest boards pulled from https://www.pinterest.com/junaidrbhatti/ (10 public of 11).
-# use: clothing -> trains clothing taste. home -> kept for the future home department.
-#      design -> site design references. ignore -> stored, not used for scoring.
+# use: clothing -> trains clothing taste and shows in Inspiration.
+#      mood -> shows in Inspiration, not used for scoring (mostly interiors, landscapes, portraits).
+#      home -> kept for the future home department. design -> site design references.
+#      ignore -> stored, not used.
 username: junaidrbhatti
 boards:
   clothes: clothing
   outfits: clothing
-  vibes-+-aesthetic: clothing
-  scrapbook: clothing
+  vibes-+-aesthetic: mood
+  scrapbook: mood
   apartment-inspo: home
   decordesign: home
   appswebsite-inspo: design

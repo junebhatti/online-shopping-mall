@@ -1,0 +1,5 @@
+# General items the agents keep looking for across every source, e.g. a cologne on sale.
+# Synced into the watches table each cycle. Price tracking and alerts arrive in Phase 3.
+- label: Jo Malone Wood Sage & Sea Salt
+  query: jo malone wood sage sea salt cologne
+  department: fragrance

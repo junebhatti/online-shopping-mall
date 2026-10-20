@@ -85,26 +85,29 @@ Rules:
   Use Claude Haiku for batched text classification; open CLIP-style embeddings on the worker; Claude vision only for borderline items.
 - Secrets in `.env.local`, never committed.
 
-## Architecture sketch
+## Architecture (as built)
 
 ```
-apps/web        Next.js site (feed, detail, saved, settings, rating session, owner auth)
-apps/worker     Cron loop: ingest -> normalize -> dedupe -> gate (size, condition, region)
-                -> score (embeddings + profile) -> admit -> background removal -> price checks -> digest
-packages/db     Drizzle schema + client shared by web and worker
-packages/sources One adapter per source implementing { id, listNew(), refreshPrice(listing) }
-config/         brands.yaml, sizes, thresholds
-taste/          profile.md (editable), pins snapshot
+apps/web          Next.js 16 site: feed, inspiration, saved, rating session, search, item, settings, owner login
+apps/worker       Loop: ingest -> gate -> embed -> score -> judge -> admit -> cutouts
+packages/db       Drizzle schema, migrations and client shared by web and worker
+packages/sources  Adapters: Shopify /products.json, eBay Browse API, Pinterest widget API
+packages/config   Loads and validates config/*.yaml
+config/           brands, rules (sizes, ceilings, condition), taste anchors, queries, pinterest boards, watches
+taste/            profile.md, read by the Claude judge
 ```
 
-Core tables: `brands`, `listings`, `listing_images`, `price_points`, `ratings`, `saves`,
-`pins`, `embeddings`, `source_runs` (status + errors per run, so failures are visible).
+Tables: `listings` (category-agnostic, JSON attributes, gate/score/judge/admission state),
+`price_points`, `cutouts` (WebP bytes), `ratings`, `saves`, `watches`, `pins`, `source_runs`.
+Embeddings are `real[]` columns on listings and pins, compared in the worker.
 
 ## Phases
 
 1. **Foundation + feed** — repo scaffold, schema, owner auth, eBay + Shopify brand adapters,
    Pinterest scrape -> taste profile + pin embeddings, scoring pipeline, feed with three-way rating,
    rating session view, background removal, worker deployed.
+   *Status 2026-10-20: built and running locally. Waiting on eBay keys, a Claude API key,
+   and accounts for Neon, Vercel and Railway to deploy.*
 2. **Resale** — Depop, Grailed, Vinted, Poshmark/Mercari, TheRealReal/Vestiaire; measurement
    parsing; condition gate; live resale search.
 3. **Saves + alerts** — save = watch, price history, cross-store matching, resale-vs-retail gap,
@@ -136,6 +139,10 @@ Consequences for Phase 1 so this does not need a rewrite later:
 
 ## Open items
 - Set up eBay developer keys together (live session).
+- Add a Claude API key so the taste judge runs (until then admission uses a score floor).
+- Deploy: Neon database, Vercel for the site, Railway for the worker.
+- Confirm the price ceilings marked "guess" in config/rules.yaml.
+- Confirm Claude's read of the Pinterest boards in taste/profile.md.
 - Which Pinterest boards to exclude, if any.
 - Confirm the four clothing_candidates in config/brands.yaml (sites unverified).
 - Site name.

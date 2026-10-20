@@ -1,6 +1,8 @@
+import { runCutouts } from "./images/run-cutouts.ts";
 import { ingestEbay } from "./ingest/ebay.ts";
 import { ingestPinterest } from "./ingest/pinterest.ts";
 import { ingestShopify } from "./ingest/shopify.ts";
+import { syncWatches } from "./ingest/watches.ts";
 import { log } from "./log.ts";
 import { lastOk } from "./runs.ts";
 import { runAdmit } from "./taste/admit.ts";
@@ -19,11 +21,13 @@ const INGEST: Job[] = [
 ];
 
 const PROCESS: Job[] = [
+  { name: "watches", everyHours: 0, run: syncWatches },
   { name: "gate", everyHours: 0, run: runGate },
   { name: "embed", everyHours: 0, run: runEmbed },
   { name: "score", everyHours: 0, run: runScore },
   { name: "judge", everyHours: 0, run: runJudge },
   { name: "admit", everyHours: 0, run: runAdmit },
+  { name: "cutouts", everyHours: 0, run: runCutouts },
 ];
 
 const args = process.argv.slice(2);
