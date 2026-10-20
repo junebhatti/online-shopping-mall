@@ -1,0 +1,43 @@
+# Hard rules the worker applies before any taste scoring ("the gate").
+# Edit freely; the worker re-reads this file every run.
+
+sizes:
+  tops: [M, Medium]          # tees, shirts, knits, sweatshirts, outerwear
+  waist: 32
+  inseam: { min: 30, max: 32 } # longer can be hemmed; wide pants should break over the shoe
+  shoe: 10
+  # Resale tops with measurements: around 26" length, 22-23" chest (pit to pit).
+  top_measurements: { length_in: [25, 28], chest_in: [21, 24] }
+
+# Max price for a piece, USD. Junaid gave tees, pants and outerwear; the rest are
+# Claude's guesses to confirm. Luxury only gets in when it's on sale under these.
+price_ceilings_usd:
+  tee: 80
+  long_sleeve: 80
+  pants: 250
+  denim: 250
+  outerwear: 500
+  shirt: 150        # guess
+  knit: 250         # guess
+  sweatshirt: 150   # guess
+  shorts: 100       # guess
+  shoes: 300        # guess
+  accessory: 150    # guess
+  fragrance: 350    # guess
+  underwear: 60     # guess
+  other: 200        # guess
+
+admission:
+  daily_limit: 20          # new items admitted to the feed per day
+  rating_session_size: 30  # items in each daily rating session (week one)
+
+resale:
+  max_shipping_usd: 20
+  reject_conditions: [fair, poor]
+  # Real damage only. Light wear is fine; "ripstop" and "distressed wash" are not damage.
+  damage_words: [hole, holes, stain, stains, stained, paint, ripped, torn, tear, damaged, moth, bleach spot, as is]
+  # "replica" is not here on purpose: Maison Margiela Replica is a genuine fragrance line.
+  replica_words: [dupe, "1:1", not authentic, inspired by, in the style of, knockoff, knock off, unauthorized]
+
+# Whole-garment colours that are always out. Pastels are fine; this is about saturation.
+loud_colors: [neon, fluorescent, hot pink, lime, electric, highlighter, rainbow, tie dye, tie-dye, camo, safety orange, bright yellow]

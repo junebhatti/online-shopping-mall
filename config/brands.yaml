@@ -1,6 +1,10 @@
 # Brands the mall follows. Grows over time from ratings.
 # kind: new = brand site / retailers; vintage = Depop, eBay and other resale only
-# site: brand's own store; shopify: true when /products.json works (verify in phase 1)
+# site: brand's own store
+# feed: shopify  -> the store's public /products.json works (checked 2026-10-20).
+#   Everything else is blocked (403) or not Shopify; those brands come in through eBay
+#   and resale until department-store and retailer adapters exist (Phase 4).
+# sale_only: only admit marked-down items. menswear_only: unlabeled products count as men's.
 
 clothing:
   - { name: Buck Mason,            kind: new,  site: https://www.buckmason.com }
@@ -8,21 +12,21 @@ clothing:
   - { name: Nudie Jeans,           kind: new,  site: https://www.nudiejeans.com }
   - { name: Carhartt,              kind: new,  site: https://www.carhartt.com }
   - { name: Basketcase Gallery,    kind: new,  site: https://basketcasegallery.com }
-  - { name: Los Angeles Apparel,   kind: new,  site: https://losangelesapparel.net }
+  - { name: Los Angeles Apparel,   kind: new,  site: https://losangelesapparel.net, feed: shopify }
   - { name: Maison Margiela,       kind: new,  site: https://www.maisonmargiela.com }
   - { name: Acne Studios,          kind: new,  site: https://www.acnestudios.com }
   - { name: Stone Island,          kind: new,  site: https://www.stoneisland.com }
   - { name: rag & bone,            kind: new,  site: https://www.rag-bone.com }
   - { name: Theory,                kind: new,  site: https://www.theory.com }
-  - { name: Lululemon,             kind: new,  site: https://shop.lululemon.com }
+  - { name: Lululemon,             kind: new,  site: https://shop.lululemon.com, sale_only: true }
   - { name: Banana Republic,       kind: new,  site: https://bananarepublic.gap.com }
   - { name: Merz b. Schwanen,      kind: new,  site: https://www.merz-schwanen.com }
   - { name: Arc'teryx,             kind: new,  site: https://arcteryx.com }
-  - { name: Alo,                   kind: new,  site: https://www.aloyoga.com }
+  - { name: Alo,                   kind: new,  site: https://www.aloyoga.com, feed: shopify, sale_only: true }
 
 # Candidates surfaced from Instagram on 2026-10-20; confirm sites and fit before enabling
 clothing_candidates:
-  - { name: Pool House New York,    kind: new,  site: https://poolhousenewyork.com }
+  - { name: Pool House New York,    kind: new,  site: https://poolhousenewyork.com, feed: shopify, menswear_only: true }
   - { name: Peoples Fortune,        kind: new,  site: https://peoplesfortune.com }
   - { name: Atelier Taro,           kind: new,  site: https://ateliertaro.com }
   - { name: Shapes,                 kind: new,  site: https://shapescalifornia.com }

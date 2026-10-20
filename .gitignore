@@ -6,3 +6,7 @@ dist/
 .env.*.local
 .DS_Store
 *.log
+.data/
+.cache/
+*.tsbuildinfo
+next-env.d.ts

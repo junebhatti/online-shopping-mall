@@ -1,0 +1,16 @@
+{
+  "name": "@mall/worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file-if-exists=../../.env.local --import tsx src/main.ts",
+    "once": "node --env-file-if-exists=../../.env.local --import tsx src/main.ts --once",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@mall/db": "*",
+    "@mall/sources": "*",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  }
+}

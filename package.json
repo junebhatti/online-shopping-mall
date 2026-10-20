@@ -1,0 +1,25 @@
+{
+  "name": "online-shopping-mall",
+  "private": true,
+  "type": "module",
+  "workspaces": ["apps/*", "packages/*"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "npm run dev -w @mall/web",
+    "build": "npm run build -w @mall/web",
+    "worker": "npm run start -w @mall/worker",
+    "worker:once": "npm run once -w @mall/worker",
+    "db:start": "bash scripts/db.sh start",
+    "db:stop": "bash scripts/db.sh stop",
+    "db:generate": "npm run generate -w @mall/db",
+    "db:migrate": "npm run migrate -w @mall/db",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.5"
+  }
+}
