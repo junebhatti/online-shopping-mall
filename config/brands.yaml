@@ -26,6 +26,7 @@ clothing_candidates:
   - { name: Peoples Fortune,        kind: new,  site: https://peoplesfortune.com }
   - { name: Atelier Taro,           kind: new,  site: https://ateliertaro.com }
   - { name: Shapes,                 kind: new,  site: https://shapescalifornia.com }
+  - { name: Brut Archives,          kind: new,  site: https://brut-archives.com, note: Alpine Jacket reference }
 
 vintage:
   - { name: Patagonia,        kind: vintage, note: 90s fleece and outdoor }

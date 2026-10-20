@@ -11,7 +11,7 @@ Junaid corrects it directly; the scorer reads it on every run.
 Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
 
 ## Fit references (Junaid's own words, 2026-10-20)
-- **Tops:** fit like the Buck Mason Tough Tubular tee and Field Spec tee. Not too boxy; sits
+- **Tops (MOST IMPORTANT fit rule):** fit like the Buck Mason Tough Tubular tee and Field Spec tee. Not too boxy; sits
   around the waistline. Sleeves not tight but show a little arm, so they look their size rather
   than skinny. Use those two tees as the reference silhouette.
 - **Pants:** Nudie Loud Larry; Acne Studios Fall 2021 fits; Atelier Taro green pants (Instagram);
@@ -50,7 +50,25 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
 - **Denim:** raw/selvedge and washed vintage. No black denim called out.
 - **Palette:** earth tones (olive, brown, tan, rust, khaki) and navy/indigo.
 
+## Owned references (bought recently; match the feeling, not the exact item)
+- Vintage Woolrich charcoal heather long-sleeve blank crew tee, M, Depop, $18, excellent
+  condition, made in Hong Kong. The long-sleeve basic reference.
+- Vintage Woolrich blue graph-plaid button-down cotton pocket shirt, M, Depop, $13.63.
+  The flannel / casual shirt reference; loved.
+
+## Jacket references (images sent 2026-10-20)
+- Brut Archives "The Alpine Jacket": washed navy cotton canvas, oversized, drop shoulder, stand
+  collar, snap front, large patch pockets, sleeve pocket. The target for "oversized canvas
+  jacket like a Carhartt but not Carhartt-branded".
+- Vintage indigo stand-collar work jacket, raglan sleeves, flap chest pockets, cropped, boxy.
+- Olive cotton field jacket (M-65 style chest flap pockets) over a cream knit, dark wide
+  jeans, white socks, black loafers.
+
 ## Current wants (prioritize in the feed, 2026-10-20)
+- Oversized canvas work jacket, unbranded or small-label, Brut Archives Alpine as the model.
+- Casual loafers that fit the style.
+- More sweaters, jackets, tees, and casual dress shirts.
+- Cologne: Jo Malone Wood Sage & Sea Salt on sale (first watchlist item).
 - Khaki wide-leg pants like photo 3, with a Nudie Loud Larry bootleg-type fit.
 - A big vintage Ralph Lauren trench coat.
 - Cool long-sleeve basics.
