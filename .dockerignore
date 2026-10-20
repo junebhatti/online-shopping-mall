@@ -1,0 +1,8 @@
+node_modules
+.next
+apps/web/.next
+.data
+.cache
+.env*
+!.env.example
+.git
