@@ -1,7 +1,14 @@
 import { lastSaleFind, sourceStatus } from "@/lib/queries";
 import { timeAgo } from "@/lib/format";
 
-const SOURCE_LABEL: Record<string, string> = { shopify: "brand sites", ebay: "eBay", pinterest: "Pinterest", judge: "taste judge" };
+const SOURCE_LABEL: Record<string, string> = {
+  shopify: "brand sites",
+  yoox: "Yoox",
+  grailed: "Grailed",
+  ebay: "eBay",
+  pinterest: "Pinterest",
+  judge: "taste judge",
+};
 
 /** One-line status under the header: what's being watched and the latest markdown found. */
 export async function SaleStrip() {

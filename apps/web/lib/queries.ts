@@ -204,3 +204,23 @@ export async function countsByStore(): Promise<Map<string, number>> {
   }
   return m;
 }
+
+/** "Only {brand}": everything from one brand that fits, across stores, sale first (v4 Settings behaviour). */
+export async function brandView(brand: string): Promise<{ sale: Tile[]; justListed: Tile[] }> {
+  const rows = await tileQuery()
+    .where(
+      orm.and(
+        orm.eq(listings.gate, "passed"),
+        orm.eq(listings.status, "active"),
+        notRejectedByOwner,
+        orm.sql`(lower(${listings.brand}) = lower(${brand}) or lower(${listings.store}) = lower(${brand}))`,
+      ),
+    )
+    .orderBy(orm.desc(listings.score))
+    .limit(300);
+  const tiles = rows.map(toTile);
+  return {
+    sale: tiles.filter((t) => t.pct).sort((a, b) => (b.pct ?? 0) - (a.pct ?? 0)),
+    justListed: tiles.filter((t) => !t.pct),
+  };
+}

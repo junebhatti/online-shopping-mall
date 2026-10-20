@@ -14,6 +14,8 @@ const GROUPS = [
 
 const SOURCE_NAMES: Record<string, string> = {
   shopify: "Brand sites",
+  yoox: "Yoox (sale)",
+  grailed: "Grailed",
   ebay: "eBay",
   pinterest: "Pinterest boards",
   judge: "Taste judge (Claude)",
@@ -52,11 +54,11 @@ export default async function SettingsPage() {
             </div>
             {g.brands.map((b) => {
               const n = counts.get(b.name) ?? 0;
-              const how = b.feed === "shopify" ? "from the brand site" : b.kind === "vintage" ? "resale" : "via eBay and resale";
+              const how = b.feed === "shopify" ? "from the brand site" : b.kind === "vintage" ? "resale" : "via Yoox, Grailed and eBay";
               return (
                 <Link
                   key={b.name}
-                  href={`/search?q=${encodeURIComponent(b.name)}`}
+                  href={`/?brand=${encodeURIComponent(b.name)}`}
                   className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_60px] items-baseline gap-s4 border-b border-divider py-[9px] transition-colors hover:text-accent-hover"
                 >
                   <span className="font-heading text-[19px]">{b.name}</span>
@@ -90,7 +92,7 @@ export default async function SettingsPage() {
               ))}
             </div>
           ))}
-          <p className="m-0 text-[11px] italic text-ink-muted">Resale every 2 hours, brand sites twice a day, Pinterest daily.</p>
+          <p className="m-0 text-[11px] italic text-ink-muted">Resale every 2 hours, brand sites and Yoox twice a day, Pinterest daily.</p>
         </Block>
         <Block title="Sizes">
           <div className="flex flex-wrap gap-1.5">
