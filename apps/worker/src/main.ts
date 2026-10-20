@@ -1,3 +1,4 @@
+import { runDigest } from "./digest/run-digest.ts";
 import { runCutouts } from "./images/run-cutouts.ts";
 import { ingestEbay } from "./ingest/ebay.ts";
 import { ingestPinterest } from "./ingest/pinterest.ts";
@@ -46,11 +47,14 @@ async function cycle(force: boolean): Promise<void> {
     ingested = true;
   }
   // Processing only has work to do after new data arrived.
-  if (!force && !ingested) return;
-  for (const job of selected(PROCESS)) {
-    log.info(`running ${job.name}`);
-    await job.run();
+  if (force || ingested) {
+    for (const job of selected(PROCESS)) {
+      log.info(`running ${job.name}`);
+      await job.run();
+    }
   }
+  // The digest decides for itself whether it's due (once a day, after DIGEST_HOUR).
+  if (!only || only.includes("digest")) await runDigest(Boolean(only?.includes("digest")));
 }
 
 if (once) {

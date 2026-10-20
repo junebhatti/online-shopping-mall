@@ -17,6 +17,7 @@ const SOURCE_NAMES: Record<string, string> = {
   ebay: "eBay",
   pinterest: "Pinterest boards",
   judge: "Taste judge (Claude)",
+  digest: "Daily digest email",
 };
 
 export default async function SettingsPage() {
@@ -113,6 +114,11 @@ export default async function SettingsPage() {
           <Row name="Pinterest boards used" note={Object.values(boards).filter((u) => u === "clothing").length + " of " + Object.keys(boards).length} />
           <Row name="Judge model" note={taste.judge.model} />
         </Block>
+        {owner ? (
+          <Block title="Digest">
+            <Link href="/digest" className="btn btn-ghost self-start text-[12px]">Preview today&apos;s email →</Link>
+          </Block>
+        ) : null}
         <Block title="Owner">
           {owner ? (
             <form action={logout}>

@@ -8,7 +8,7 @@ const root = fileURLToPath(new URL("../../", import.meta.url));
 loadEnvConfig(root, process.env.NODE_ENV !== "production", undefined, true);
 
 const config: NextConfig = {
-  transpilePackages: ["@mall/db", "@mall/config", "@mall/sources"],
+  transpilePackages: ["@mall/db", "@mall/config", "@mall/sources", "@mall/digest"],
   outputFileTracingRoot: root,
   // Settings reads the YAML config and taste profile at request time.
   outputFileTracingIncludes: { "/**": ["../../config/**/*", "../../taste/**/*"] },

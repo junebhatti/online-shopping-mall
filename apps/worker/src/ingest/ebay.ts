@@ -1,4 +1,5 @@
-import { db, listings, orm, type Department } from "@mall/db";
+import { db, listings, orm, saves, watches, type Department } from "@mall/db";
+import { HttpError } from "@mall/sources";
 import {
   EBAY_CATEGORY,
   ebayCredentialsFromEnv,
@@ -36,6 +37,10 @@ export async function ingestEbay(): Promise<void> {
     ...q.shoes.map((query) => ({ query, department: "clothing" as const, categoryId: EBAY_CATEGORY.shoes })),
     ...q.fragrance.map((query) => ({ query, department: "fragrance" as const })),
   ];
+  // Watches are searched too, so a watched cologne turns up even if it isn't in queries.yaml.
+  for (const w of await db().select().from(watches).where(orm.eq(watches.active, true))) {
+    if (!searches.some((s) => s.query === w.query)) searches.push({ query: w.query, department: w.department });
+  }
 
   let detailBudget = MAX_DETAIL_CALLS_PER_CYCLE;
   for (const s of searches) {
@@ -60,6 +65,7 @@ export async function ingestEbay(): Promise<void> {
       break;
     }
   }
+  await refreshSavedEbay(creds);
 }
 
 async function knownIds(ids: string[]): Promise<Set<string>> {
@@ -69,4 +75,30 @@ async function knownIds(ids: string[]): Promise<Set<string>> {
     .from(listings)
     .where(orm.and(orm.eq(listings.source, "ebay"), orm.inArray(listings.externalId, ids)));
   return new Set(rows.map((r) => r.id));
+}
+
+/** Saved eBay items are re-checked every cycle so drops and sell-outs reach the digest. */
+export async function refreshSavedEbay(creds: EbayCredentials): Promise<void> {
+  const saved = await db()
+    .select({ id: listings.id, externalId: listings.externalId, department: listings.department })
+    .from(saves)
+    .innerJoin(listings, orm.eq(saves.listingId, listings.id))
+    .where(orm.and(orm.eq(listings.source, "ebay"), orm.eq(listings.status, "active")));
+  if (saved.length === 0) return;
+  await withRun("ebay", "saved items", async (counts) => {
+    counts.fetched = saved.length;
+    for (const s of saved) {
+      try {
+        const mapped = mapEbayItem(await getEbayItem(creds, s.externalId), s.department);
+        if (mapped) await upsertListing(mapped, counts);
+      } catch (err) {
+        // 404 means the listing ended; anything else is a real failure for this run.
+        if (err instanceof HttpError && err.status === 404) {
+          await db().update(listings).set({ status: "sold", updatedAt: new Date() }).where(orm.eq(listings.id, s.id));
+          counts.updated++;
+        } else throw err;
+      }
+      await sleep(150);
+    }
+  });
 }

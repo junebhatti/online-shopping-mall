@@ -1,6 +1,7 @@
 import { sizedImageUrl } from "@mall/sources";
 import { notFound } from "next/navigation";
 import { OwnerControls } from "@/components/OwnerControls";
+import { PriceChart } from "@/components/PriceChart";
 import { SectionHead, TILE_GRID } from "@/components/SectionHead";
 import { Tile } from "@/components/Tile";
 import { isOwner } from "@/lib/auth";
@@ -14,7 +15,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   if (!Number.isInteger(id) || id <= 0) notFound();
   const [detail, owner] = await Promise.all([listingDetail(id), isOwner()]);
   if (!detail) notFound();
-  const { tile: t, listing: l, history, similar } = detail;
+  const { tile: t, listing: l, history, similar, gap, elsewhere } = detail;
   const a = l.attributes;
   const m = a.measurements ?? {};
   const facts = [
@@ -62,6 +63,22 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
               ) : null}
             </div>
           </div>
+          {gap ? (
+            <p className="m-0 text-[12px] italic text-accent-ink">
+              About {gap.pctUnder}% under new: {t.brand.replace(/^Vintage /, "")} {t.category.replace("_", " ")} usually {usd(gap.medianNewCents)} ({gap.samples} seen)
+            </p>
+          ) : null}
+          {elsewhere.length ? (
+            <div className="flex flex-col gap-1 text-[12px]">
+              <span className="caps text-[10px] text-ink-muted">Also at</span>
+              {elsewhere.map((e) => (
+                <a key={e.id} href={`/item/${e.id}`} className="tnum flex justify-between border-b border-divider py-1 hover:text-accent-hover">
+                  <span>{e.store}</span>
+                  <span className={e.priceCents < t.priceCents ? "text-accent-ink" : ""}>{usd(e.priceCents)}</span>
+                </a>
+              ))}
+            </div>
+          ) : null}
           {t.status !== "active" ? (
             <p className="m-0 text-[13px] italic text-accent-ink">No longer available at {l.store}.</p>
           ) : null}
@@ -79,7 +96,8 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
           </dl>
           <div className="flex flex-col gap-s1">
             <span className="caps border-b border-rule pb-1.5 text-[10px]">Price history</span>
-            <ul className="tnum m-0 list-none p-0 text-[12px]">
+            {history.length >= 2 ? <PriceChart points={history} /> : null}
+            <ul className="tnum m-0 list-none p-0 text-[12px]" aria-label="Every price seen">
               {history.map((p, i) => (
                 <li key={i} className="flex justify-between border-b border-divider py-1">
                   <span className="text-ink-muted">{fmtDate(p.seenAt)}</span>

@@ -1,5 +1,6 @@
 import { db, listings, orm, pins, pricePoints, ratings, saves, sourceRuns } from "@mall/db";
 import { loadPinterest } from "@mall/config";
+import { alsoAt, retailGap } from "./compare.ts";
 import { brandMix } from "./mix.ts";
 import { tileQuery, toTile, type Tile } from "./tiles.ts";
 
@@ -97,7 +98,8 @@ export async function listingDetail(id: number) {
     .from(pricePoints)
     .where(orm.eq(pricePoints.listingId, id))
     .orderBy(pricePoints.seenAt);
-  return { tile: toTile(row), listing: row.l, history, similar: await similarTo(row.l) };
+  const [similar, gap, elsewhere] = await Promise.all([similarTo(row.l), retailGap(row.l), alsoAt(row.l)]);
+  return { tile: toTile(row), listing: row.l, history, similar, gap, elsewhere };
 }
 
 async function similarTo(l: typeof listings.$inferSelect): Promise<Tile[]> {

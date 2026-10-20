@@ -6,7 +6,9 @@ const SOURCE_LABEL: Record<string, string> = { shopify: "brand sites", ebay: "eB
 /** One-line status under the header: what's being watched and the latest markdown found. */
 export async function SaleStrip() {
   const [status, find] = await Promise.all([sourceStatus(), lastSaleFind()]);
-  const shopping = status.filter((s) => s.source !== "pinterest" && s.source !== "judge");
+  // Only sources that bring in listings count as "watching for sales".
+  const NOT_SHOPPING = new Set(["pinterest", "judge", "digest"]);
+  const shopping = status.filter((s) => !NOT_SHOPPING.has(s.source));
   const watching = shopping.reduce((n, s) => n + s.targets, 0);
   const latest = shopping
     .filter((s) => s.lastFinishedAt)

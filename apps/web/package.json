@@ -11,6 +11,7 @@
   "dependencies": {
     "@mall/config": "*",
     "@mall/db": "*",
+    "@mall/digest": "*",
     "@mall/sources": "*",
     "lucide-react": "^1.60.0",
     "next": "^16.4.2",

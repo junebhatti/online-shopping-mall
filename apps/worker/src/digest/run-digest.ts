@@ -1,0 +1,47 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+import { REPO_ROOT } from "@mall/config";
+import { buildDigest } from "@mall/digest";
+import { fetchJson } from "@mall/sources";
+import { z } from "zod";
+import { log } from "../log.ts";
+import { lastOk, withRun } from "../runs.ts";
+
+const SEND_HOUR = Number(process.env.DIGEST_HOUR ?? 8);
+
+/** Once a day after DIGEST_HOUR (local time): build the digest, keep a copy, email it via Resend. */
+export async function runDigest(force = false): Promise<void> {
+  const last = await lastOk("digest");
+  const due = !last || Date.now() - last.getTime() > 20 * 3_600_000;
+  if (!force && (!due || new Date().getHours() < SEND_HOUR)) return;
+
+  await withRun("digest", null, async (counts) => {
+    const digest = await buildDigest(process.env.SITE_URL?.replace(/\/$/, ""));
+    counts.fetched = digest.drops.length + digest.fresh.length;
+    const dir = `${REPO_ROOT}.data/digests`;
+    mkdirSync(dir, { recursive: true });
+    const file = `${dir}/${new Date().toISOString().slice(0, 10)}.html`;
+    writeFileSync(file, digest.html);
+
+    if (digest.empty) {
+      log.info("digest: quiet day, nothing to send");
+      return;
+    }
+    const key = process.env.RESEND_API_KEY;
+    const to = process.env.DIGEST_TO;
+    if (!key || !to) throw new Error(`RESEND_API_KEY / DIGEST_TO not set; today's digest was saved to .data/digests instead`);
+
+    const res = await fetchJson("https://api.resend.com/emails", z.object({ id: z.string() }), {
+      method: "POST",
+      headers: { authorization: `Bearer ${key}`, "content-type": "application/json" },
+      body: JSON.stringify({
+        from: process.env.DIGEST_FROM ?? "Personal Mall <onboarding@resend.dev>",
+        to: [to],
+        subject: digest.subject,
+        html: digest.html,
+        text: digest.text,
+      }),
+    });
+    counts.created = 1;
+    log.info(`digest sent (${res.id}): ${digest.subject}`);
+  });
+}
