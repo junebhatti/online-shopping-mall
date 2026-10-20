@@ -103,17 +103,20 @@ Embeddings are `real[]` columns on listings and pins, compared in the worker.
 
 ## Phases
 
-1. **Foundation + feed** — repo scaffold, schema, owner auth, eBay + Shopify brand adapters,
-   Pinterest scrape -> taste profile + pin embeddings, scoring pipeline, feed with three-way rating,
-   rating session view, background removal, worker deployed.
-   *Status 2026-10-20: built and running locally. Waiting on eBay keys, a Claude API key,
-   and accounts for Neon, Vercel and Railway to deploy.*
-2. **Resale** — Depop, Grailed, Vinted, Poshmark/Mercari, TheRealReal/Vestiaire; measurement
-   parsing; condition gate; live resale search.
-3. **Saves + alerts** — save = watch, price history, cross-store matching, resale-vs-retail gap,
-   daily digest email, detail page price chart.
-4. **Luxury + department stores** — SSENSE, Yoox, Farfetch; Nordstrom/Macy's/Bloomingdale's best effort;
-   dark mode polish; brand-list growth from ratings.
+1. **Foundation + feed** — done locally 2026-10-20: scaffold, schema, owner auth, Shopify + eBay adapters,
+   Pinterest pins, CLIP scoring, Claude judge, feed with three-way rating, rating session, background removal.
+2. **Resale** — done 2026-10-20 for the sites that allow it:
+   - Working: **Grailed** (public Algolia search + detail with measurements), **Poshmark** (public search JSON),
+     **Vinted** (catalogue search with the anonymous visitor token; search only), **eBay** (built, keys pending).
+   - Blocked from this Mac, left out: **Depop**, **Mercari**, **Vestiaire** (Cloudflare blocks every request),
+     **The RealReal** (its API only answers when the client works around its bot detection, which we don't do).
+3. **Saves + alerts** — done 2026-10-20: price history chart, cross-store matches, resale-vs-retail gap,
+   watches, daily digest email (sends once `RESEND_API_KEY` and `DIGEST_TO` are set; preview at /digest).
+4. **Luxury + department stores** — partly done:
+   - Working: **Yoox** men's sale for every brand it carries (public Algolia search).
+   - Blocked: **SSENSE** (Cloudflare challenge), **Farfetch** (Akamai blocks after ~12 requests),
+     Nordstrom / Macy's / Bloomingdale's not attempted (heavily protected).
+   - Still to do: brand-list growth from ratings.
 
 ## Beyond clothing (future, shapes the schema now)
 
@@ -138,11 +141,10 @@ Consequences for Phase 1 so this does not need a rewrite later:
 - The design system and tile component stay neutral enough to hold a chair or a tub of creatine.
 
 ## Open items
-- Set up eBay developer keys together (live session).
-- Add a Claude API key so the taste judge runs (until then admission uses a score floor).
-- Deploy: Neon database, Vercel for the site, Railway for the worker.
+- eBay developer account: email confirmation, then keys (in progress with Junaid).
+- Claude API key so the taste judge runs (until then admission uses a score floor).
+- Resend account for the digest email (`RESEND_API_KEY`, `DIGEST_TO`).
+- Deploy: Neon, Vercel, Railway (docs/DEPLOY.md).
 - Confirm the price ceilings marked "guess" in config/rules.yaml.
 - Confirm Claude's read of the Pinterest boards in taste/profile.md.
-- Which Pinterest boards to exclude, if any.
-- Confirm the four clothing_candidates in config/brands.yaml (sites unverified).
 - Site name.

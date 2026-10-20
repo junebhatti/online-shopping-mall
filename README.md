@@ -12,7 +12,7 @@ for price drops. Anyone can browse; only the owner can rate and save.
 ## How it works
 
 ```
-sources (Shopify stores, eBay, Pinterest)
+sources (Shopify stores, Yoox sale, Grailed, Poshmark, Vinted, eBay, Pinterest)
   -> listings in Postgres
   -> gate: size and measurements, price ceilings, condition and damage, fakes, shipping, loud colors
   -> score: local CLIP image embeddings vs. Pinterest pins, taste phrases and your ratings
@@ -21,7 +21,8 @@ sources (Shopify stores, eBay, Pinterest)
   -> cutouts: background removal so products sit on the tile ground
 ```
 
-`apps/worker` runs that loop (resale every 2 hours, brand sites twice a day, Pinterest daily).
+`apps/worker` runs that loop (resale every 2 hours, brand sites and Yoox twice a day, Pinterest daily) and sends a
+daily digest email. Deploying: [docs/DEPLOY.md](docs/DEPLOY.md).
 `apps/web` is the Next.js site. Every source run is recorded, and failures show in Settings.
 
 ## Run it locally
