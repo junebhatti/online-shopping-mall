@@ -1,0 +1,61 @@
+# How the scorer ranks listings that passed the gate. taste/profile.md is the
+# human-readable source; these are the short phrases the image model can compare against.
+
+# Image-model anchors (CLIP text prompts). Positive pull items up, negative push them down.
+want:
+  - a plain heavyweight cotton t-shirt in an earth tone
+  - a navy heavyweight crewneck t-shirt
+  - a heather grey long sleeve crew neck t-shirt
+  - a ringer t-shirt with a contrast collar
+  - a blue plaid flannel button down shirt
+  - a white oxford cloth button down shirt
+  - wide leg pleated wool trousers
+  - grey pinstripe pleated trousers
+  - wide leg khaki cotton work pants
+  - raw selvedge denim jeans
+  - washed vintage straight leg jeans
+  - an oversized navy canvas work jacket with a stand collar
+  - an olive cotton field jacket
+  - a camel wool overcoat
+  - a vintage trench coat
+  - a vintage fleece jacket
+  - a cashmere v-neck sweater
+  - a heavyweight grey crewneck sweatshirt
+  - a cotton henley
+  - black leather penny loafers
+  - brown leather horsebit loafers
+  - retro suede running sneakers
+  - vintage soccer shorts
+  - a wool beanie
+  - a canvas tote bag
+avoid:
+  - a neon colored athletic garment
+  - a shiny synthetic athletic jacket
+  - a faux leather jacket
+  - a busy graphic print t-shirt
+  - skin tight compression leggings
+  - a cropped muscle tank top
+  - a sequin or glitter garment
+
+# Weights on z-scored components. Ratings count most once there are some.
+weights:
+  pins: 1.0
+  want: 1.0
+  avoid: 0.7
+  wear: 1.5
+  not: 1.5
+  inspo: 0.5
+
+# Fragrance is matched on name, not by image.
+fragrance_favorites: [wood sage, baccarat rouge, lazy sunday morning, jazz club, replica, le male, ultra male, gaultier]
+
+judge:
+  # Claude Haiku keeps judging under the $25/month budget in PLAN.md (about $1-2/month at this volume).
+  model: claude-haiku-5-5
+  batch_size: 30
+  # Without a judge, only listings at least this many standard deviations above the pool average get in.
+  min_score_without_judge: 0.75
+
+admission:
+  initial_backfill: 60      # first run seeds the feed with this many instead of the daily limit
+  max_share_per_store: 0.4  # no single store takes more than this share of one admission batch

@@ -1,6 +1,6 @@
 export type { NormalizedListing } from "./types.ts";
 export { categorize, detectGender } from "./categorize.ts";
-export { fetchJson, HttpError, sleep, toCents } from "./http.ts";
+export { BROWSER_UA, fetchJson, HttpError, sleep, toCents } from "./http.ts";
 export { fetchShopifyProducts, mapShopifyProduct, stripHtml, type ShopifyProduct, type ShopifyTarget } from "./shopify.ts";
 export {
   EBAY_CATEGORY,

@@ -89,6 +89,8 @@ export const listings = pgTable(
     embedding: real("embedding").array(),
     embeddingModel: text("embedding_model"),
     score: real("score"),
+    judgeVerdict: text("judge_verdict").$type<"admit" | "skip">(),
+    judgeFit: integer("judge_fit"),
     judgeNote: text("judge_note"),
     admittedAt: timestamp("admitted_at", { withTimezone: true }),
 

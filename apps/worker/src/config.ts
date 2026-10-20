@@ -91,4 +91,24 @@ const pinterestSchema = z.object({
 
 export const loadPinterest = () => loadYaml("config/pinterest.yaml", pinterestSchema);
 
+const tasteSchema = z.object({
+  want: z.array(z.string()).min(1),
+  avoid: z.array(z.string()),
+  weights: z.object({
+    pins: z.number(),
+    want: z.number(),
+    avoid: z.number(),
+    wear: z.number(),
+    not: z.number(),
+    inspo: z.number(),
+  }),
+  fragrance_favorites: z.array(z.string()),
+  judge: z.object({ model: z.string(), batch_size: z.number().int().positive(), min_score_without_judge: z.number() }),
+  admission: z.object({ initial_backfill: z.number().int(), max_share_per_store: z.number().gt(0).lte(1) }),
+});
+
+export type TasteConfig = z.infer<typeof tasteSchema>;
+
+export const loadTaste = () => loadYaml("config/taste.yaml", tasteSchema);
+
 export const readTasteProfile = () => readFileSync(`${REPO_ROOT}taste/profile.md`, "utf8");
