@@ -50,6 +50,22 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
 - **Denim:** raw/selvedge and washed vintage. No black denim called out.
 - **Palette:** earth tones (olive, brown, tan, rust, khaki) and navy/indigo.
 
+## Current wants (prioritize in the feed, 2026-10-20)
+- Khaki wide-leg pants like photo 3, with a Nudie Loud Larry bootleg-type fit.
+- A big vintage Ralph Lauren trench coat.
+- Cool long-sleeve basics.
+- Wide pleated wool trousers.
+
+## Resale rules
+- Auto-reject: replica or fake signals (suspiciously cheap luxury, "inspired by", "style of");
+  high shipping (over about $20) or shipping from outside the US.
+- Missing measurements and stock-only photos are not auto-rejects; rank them lower.
+- Search habits today: brand + item, era + item, browsing brand pages, and liking lots of
+  would-wear items to train the algorithm. Seed the resale queries from those patterns.
+
+## Inspo items
+Items marked Inspo live in the Inspiration view, mixed with Pinterest pins, shown without prices.
+
 ## Hard rejects
 - Loud colors: neon, bright primaries, busy patterns.
 - Damaged used pieces: large holes, big paint marks, stains.
