@@ -9,7 +9,7 @@ import { ingestShopify } from "./ingest/shopify.ts";
 import { ingestYoox } from "./ingest/yoox.ts";
 import { syncWatches } from "./ingest/watches.ts";
 import { log } from "./log.ts";
-import { lastOk } from "./runs.ts";
+import { lastFinished } from "./runs.ts";
 import { runAdmit } from "./taste/admit.ts";
 import { runJudge } from "./taste/judge.ts";
 import { runEmbed } from "./taste/run-embed.ts";
@@ -47,7 +47,7 @@ const selected = (jobs: Job[]) => (only ? jobs.filter((j) => only.includes(j.nam
 async function cycle(force: boolean): Promise<void> {
   let ingested = false;
   for (const job of selected(INGEST)) {
-    const last = await lastOk(job.name);
+    const last = await lastFinished(job.name);
     const due = force || !last || Date.now() - last.getTime() >= job.everyHours * 3_600_000;
     if (!due) continue;
     log.info(`running ${job.name}`);

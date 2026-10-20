@@ -43,3 +43,12 @@ export async function lastOk(source: string): Promise<Date | null> {
     .where(orm.and(orm.eq(sourceRuns.source, source), orm.eq(sourceRuns.status, "ok")));
   return row?.at ?? null;
 }
+
+/** When did this source last finish, ok or not? A failing source waits its cadence before retrying. */
+export async function lastFinished(source: string): Promise<Date | null> {
+  const [row] = await db()
+    .select({ at: orm.max(sourceRuns.finishedAt) })
+    .from(sourceRuns)
+    .where(orm.eq(sourceRuns.source, source));
+  return row?.at ?? null;
+}
