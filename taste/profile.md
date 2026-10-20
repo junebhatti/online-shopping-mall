@@ -22,9 +22,16 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
   2. Grey pinstripe pleated wide-leg trousers, mid rise, very full straight leg, cropped white tee.
   3. Cream cotton wide-leg workpant with knee articulation, baggy, bunched at the ankle; pale blue
      crewneck over a yellow tee, dark leather shoes.
-  Common thread: wide and pleated, natural-waist rise, length to the shoe, tucked or short top,
-  leather shoes. Pastels (pale blue, soft yellow) are fine: the loud-colors reject is about
-  saturation, not lightness.
+  4. Fitted cornflower-blue V-neck knit over a red tee showing at collar and hem; tan washed
+     straight-wide jeans (Acne-style fade), brown belt, cuffed over black leather shoes.
+  Common thread: wide and pleated or straight-wide, natural-waist rise, length to the shoe,
+  tucked or short top, leather shoes. Knits can be slim. Pastels (pale blue, soft yellow) are
+  fine, and a saturated color works as a small under-layer accent: the loud-colors reject is
+  about whole garments in neon or busy patterns, not lightness or a peek of red.
+- **Shoes:** penny and horsebit loafers; retro runners and classic sneakers (New Balance, Sambas, Converse).
+- **Outerwear:** chore and work jackets; wool overcoats and unstructured blazers; fleece and
+  technical shells (Patagonia, Arc'teryx, Stone Island). Not leather or suede jackets.
+- **Price ceilings (new, per piece):** tees $80, pants $250, outerwear $500. Luxury only on sale.
 - **Denim:** raw/selvedge and washed vintage. No black denim called out.
 - **Palette:** earth tones (olive, brown, tan, rust, khaki) and navy/indigo.
 
