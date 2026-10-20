@@ -38,6 +38,7 @@ fragrance:
   - { name: Jo Malone,                  kind: new, site: https://www.jomalone.com }
   - { name: Jean Paul Gaultier,         kind: new, site: https://www.jeanpaulgaultier.com }
   - { name: Maison Margiela Replica,    kind: new, site: https://www.maisonmargiela-fragrances.us }
+  - { name: Maison Francis Kurkdjian,   kind: new, site: https://www.franciskurkdjian.com, note: Baccarat Rouge 540 }
 
 essentials:
   - { name: Calvin Klein, kind: new, note: underwear, site: https://www.calvinklein.us }

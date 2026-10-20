@@ -16,7 +16,8 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
   than skinny. Use those two tees as the reference silhouette.
 - **Pants:** Nudie Loud Larry; Acne Studios Fall 2021 fits; Atelier Taro green pants (Instagram);
   Pool House Shibuya straight leg; vintage Ralph Lauren baggy pleated pants. Photos to follow.
-- **Pant photos sent 2026-10-20 (described, originals not in repo):**
+- **Pant photos sent 2026-10-20 (described, originals not in repo). These are references for
+  pant fit and type above all; the tops and shoes in them are incidental, not the point:**
   1. Charcoal wool double-pleat wide-leg trousers, high rise, full length breaking over black
      penny loafers, thin black belt, white tee tucked.
   2. Grey pinstripe pleated wide-leg trousers, mid rise, very full straight leg, cropped white tee.
@@ -38,6 +39,13 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
 - **Occasions:** class and campus, finance-adjacent (calls, interviews, office days), going out,
   gym and errands. The feed should cover all four, not just the dressy end.
 - **Accessories:** occasional only. Cool wool hats and interesting bags here and there. No belts.
+- **Knits and layers:** heavy sweatshirts (Russell, reverse weave, Merz loopwheel); fine wool and
+  cashmere V-necks, crewnecks, cardigans; henleys and thermals; OCBDs and heavy flannels.
+- **Tees:** heavyweight plain, ringer and contrast collar, polos and knit polos, long sleeves.
+- **Gym and athletic:** vintage soccer shorts (cool adidas ones) are a real target on resale;
+  tees and quarter zips. Lululemon and Alo only when on sale.
+- **Fragrance favorites:** Jean Paul Gaultier, Margiela Replica, Jo Malone Wood Sage & Sea Salt,
+  Baccarat Rouge 540 (Maison Francis Kurkdjian; add as a fragrance brand).
 - **Price ceilings (new, per piece):** tees $80, pants $250, outerwear $500. Luxury only on sale.
 - **Denim:** raw/selvedge and washed vintage. No black denim called out.
 - **Palette:** earth tones (olive, brown, tan, rust, khaki) and navy/indigo.
