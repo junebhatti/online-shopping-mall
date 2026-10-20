@@ -112,6 +112,28 @@ Core tables: `brands`, `listings`, `listing_images`, `price_points`, `ratings`, 
 4. **Luxury + department stores** — SSENSE, Yoox, Farfetch; Nordstrom/Macy's/Bloomingdale's best effort;
    dark mode polish; brand-list growth from ratings.
 
+## Beyond clothing (future, shapes the schema now)
+
+Down the line the mall grows into a hub for everything Junaid buys, not just clothes:
+- **Rebuy shelf** — things bought on a cycle (creatine, toiletries, coffee) sit in their own
+  department with an expected rebuy interval, get resurfaced when they are probably running low,
+  and have agents watching for price drops across Amazon and the usual stores.
+- **General wishlists** — any item by URL, any category, watched for drops and restocks.
+- **Discovery for other departments** — eBay and resale scanned for furniture, home goods, and
+  other useful or interesting objects, with their own taste signal separate from clothing.
+
+Consequences for Phase 1 so this does not need a rewrite later:
+- `listings` is category-agnostic: a core row (source, url, title, brand, price, currency,
+  condition, images, status) plus a JSON `attributes` column for category-specific fields
+  (size, measurements, fit, volume for fragrance, dimensions for furniture).
+- A `departments` concept from day one (clothing, fragrance, essentials now; home, supplements
+  later). Every listing, rating, and taste profile belongs to a department, so the clothing
+  model never scores a desk lamp.
+- Sources are adapters that can serve more than one department (eBay already does).
+- Saves carry an optional `rebuy_interval_days` and `last_bought_at` so the rebuy shelf is a
+  view over saves, not a new system.
+- The design system and tile component stay neutral enough to hold a chair or a tub of creatine.
+
 ## Open items
 - Set up eBay developer keys together (live session).
 - Which Pinterest boards to exclude, if any.
