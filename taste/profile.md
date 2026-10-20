@@ -10,6 +10,15 @@ Junaid corrects it directly; the scorer reads it on every run.
 ## Vibe (in Junaid's words, to be expanded from pins)
 Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
 
+## Fit references (Junaid's own words, 2026-10-20)
+- **Tops:** fit like the Buck Mason Tough Tubular tee and Field Spec tee. Not too boxy; sits
+  around the waistline. Sleeves not tight but show a little arm, so they look their size rather
+  than skinny. Use those two tees as the reference silhouette.
+- **Pants:** Nudie Loud Larry; Acne Studios Fall 2021 fits; Atelier Taro green pants (Instagram);
+  Pool House Shibuya straight leg; vintage Ralph Lauren baggy pleated pants. Photos to follow.
+- **Denim:** raw/selvedge and washed vintage. No black denim called out.
+- **Palette:** earth tones (olive, brown, tan, rust, khaki) and navy/indigo.
+
 ## Hard rejects
 - Loud colors: neon, bright primaries, busy patterns.
 - Damaged used pieces: large holes, big paint marks, stains.
