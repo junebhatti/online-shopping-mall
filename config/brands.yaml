@@ -23,10 +23,10 @@ clothing:
   - { name: Merz b. Schwanen,      kind: new,  site: https://www.merz-schwanen.com }
   - { name: Arc'teryx,             kind: new,  site: https://arcteryx.com }
   - { name: Alo,                   kind: new,  site: https://www.aloyoga.com, feed: shopify, sale_only: true }
+  - { name: Pool House New York,   kind: new,  site: https://poolhousenewyork.com, feed: shopify, menswear_only: true }
 
 # Candidates surfaced from Instagram on 2026-10-20; confirm sites and fit before enabling
 clothing_candidates:
-  - { name: Pool House New York,    kind: new,  site: https://poolhousenewyork.com, feed: shopify, menswear_only: true }
   - { name: Peoples Fortune,        kind: new,  site: https://peoplesfortune.com }
   - { name: Atelier Taro,           kind: new,  site: https://ateliertaro.com }
   - { name: Shapes,                 kind: new,  site: https://shapescalifornia.com }

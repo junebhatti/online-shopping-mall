@@ -30,6 +30,8 @@ export function gate(l: GateInput, rules: Rules, brand: BrandConfig | undefined)
     if (needsMensLabel && !l.attributes.gender) return fail("not labeled men's");
   }
   if (l.category === "other") return fail("unknown category");
+  const skip = rules.skip_items.find((w) => hasWord(l.title, w));
+  if (skip) return fail(`skipped item: ${skip}`);
 
   if (l.priceCents > priceCeilingCents(rules, l.category)) return fail(`over ${l.category} ceiling`);
   if (brand?.sale_only && !l.retailCents) return fail("brand is sale-only");

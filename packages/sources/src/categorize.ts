@@ -8,18 +8,18 @@ const RULES: [Category, RegExp][] = [
   ["fragrance", /\b(eau de|parfum|cologne|edp|edt|fragrance|extrait)\b/],
   ["underwear", /\b(boxer|boxers|brief|briefs|trunks?|underwear)\b/],
   ["shoes", /\b(loafers?|sneakers?|shoes?|boots?|runners?|trainers?|derby|derbies|mules?|sandals?|clogs?)\b/],
-  ["accessory", /\b(hat|cap|beanie|bag|tote|backpack|scarf|belt|socks?|gloves?|wallet|bucket hat)\b/],
+  ["accessory", /\b(hat|cap|beanie|bag|tote|backpack|scarf|belt|socks?|gloves?|wallet|bucket hat|duffle|pouch)\b/],
   ["pants", /\b(sweatpants?|joggers?|track ?pants?)\b/],
-  [
-    "outerwear",
-    /\b(jacket|coat|parka|trench|overcoat|topcoat|overshirt|shirt jacket|shacket|fleece|vest|gilet|anorak|shell|blazer|sport coat|bomber|chore)\b/,
-  ],
-  ["sweatshirt", /\b(sweatshirt|hoodie|hooded|crewneck sweat|pullover sweat|quarter zip|1\/4 zip|half zip)\b/],
+  ["shorts", /\bshorts?\b(?![- ]sleeve)/],
+  ["knit", /\b(sweater|knit|cashmere|merino)\b[^,|]*\bvest\b|\bsweater vest\b/],
+  // Clear outerwear words beat everything below; "fleece" alone does not (a fleece hoodie is a sweatshirt).
+  ["outerwear", /\b(jacket|coat|parka|trench|overcoat|topcoat|blazer|sport coat|bomber|anorak|shell|gilet|vest)\b/],
+  ["sweatshirt", /\b(sweatshirt|hoodie|crewneck sweat|pullover sweat|quarter zip|1\/4 zip|half zip)\b/],
+  ["outerwear", /\b(overshirt|shirt jacket|shacket|fleece|chore)\b/],
   ["knit", /\b(sweater|cardigan|knit|jumper|cashmere|merino|lambswool|pullover)\b/],
-  ["long_sleeve", /\b(long ?sleeve|l\/s|henley|thermal|waffle)\b/],
+  ["long_sleeve", /\b(long ?sleeves?|l\/s|henley|thermal|waffle)\b/],
   ["tee", /\b(t-?shirt|tee|tank|ringer)\b/],
-  ["shirt", /\b(shirt|oxford|ocbd|flannel|button[- ]?down|button[- ]?up|camp collar|overshirt)\b/],
-  ["shorts", /\bshorts\b/],
+  ["shirt", /\b(shirt|oxford|ocbd|flannel|button[- ]?down|button[- ]?up|camp collar)\b/],
   ["denim", /\b(jeans?|denim|selvedge|501|505)\b/],
   ["pants", /\b(pants?|trousers?|chinos?|slacks|khakis?|cargos?|carpenter|fatigues?)\b/],
   ["tee", /\bpolo\b/],
@@ -33,8 +33,13 @@ export function categorize(text: string, department: Department): Category {
   return "other";
 }
 
+// Garments that are women's even when a store tags them "unisex" (LA Apparel tags nearly everything both ways).
+const WOMEN_ONLY =
+  /\b(panty|panties|bra|bralette|bikini|leggings?|dress|skirt|bodysuit|intimates?|high[- ]waist(ed)?|hot shorts?|camisole|cami|thong|blouse|maternity|boy shorts|tube top|halter)\b/;
+
 export function detectGender(text: string): "men" | "women" | "unisex" | undefined {
   const t = text.toLowerCase();
+  if (WOMEN_ONLY.test(t)) return "women";
   const women = /\b(women'?s?|womens|woman'?s|ladies|female|girls?)\b/.test(t);
   const men = /\b(men'?s?|mens|man'?s|male|boys?)\b/.test(t);
   if (/\bunisex\b/.test(t) || (women && men)) return "unisex";

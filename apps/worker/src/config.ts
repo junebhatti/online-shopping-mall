@@ -62,6 +62,7 @@ const rulesSchema = z.object({
     damage_words: z.array(z.string()),
     replica_words: z.array(z.string()),
   }),
+  skip_items: z.array(z.string()),
   loud_colors: z.array(z.string()),
 });
 

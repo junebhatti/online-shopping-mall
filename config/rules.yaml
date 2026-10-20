@@ -39,5 +39,8 @@ resale:
   # "replica" is not here on purpose: Maison Margiela Replica is a genuine fragrance line.
   replica_words: [dupe, "1:1", not authentic, inspired by, in the style of, knockoff, knock off, unauthorized]
 
+# Products that are never wanted, matched against the title.
+skip_items: [sock, socks, gift card, e-gift, sticker, poster, candle, keychain, lanyard, face mask, yoga mat, water bottle, shipping protection]
+
 # Whole-garment colours that are always out. Pastels are fine; this is about saturation.
 loud_colors: [neon, fluorescent, hot pink, lime, electric, highlighter, rainbow, tie dye, tie-dye, camo, safety orange, bright yellow]

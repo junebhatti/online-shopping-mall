@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "npm run dev -w @mall/web",
     "build": "npm run build -w @mall/web",
-    "worker": "npm run start -w @mall/worker",
-    "worker:once": "npm run once -w @mall/worker",
+    "worker": "npm run start -w @mall/worker --",
+    "worker:once": "npm run once -w @mall/worker --",
     "db:start": "bash scripts/db.sh start",
     "db:stop": "bash scripts/db.sh stop",
     "db:generate": "npm run generate -w @mall/db",

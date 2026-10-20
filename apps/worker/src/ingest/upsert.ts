@@ -56,3 +56,29 @@ export async function markUnseenRemoved(source: string, store: string, since: Da
       ),
     );
 }
+
+/** Cheap refresh for a known listing: bump last-seen, and record a price change if any. */
+export async function refreshKnownPrice(
+  source: string,
+  externalId: string,
+  priceCents: number,
+  counts: RunCounts,
+): Promise<void> {
+  const [row] = await db()
+    .select({ id: listings.id, priceCents: listings.priceCents })
+    .from(listings)
+    .where(orm.and(orm.eq(listings.source, source), orm.eq(listings.externalId, externalId)));
+  if (!row) return;
+  const now = new Date();
+  const changed = row.priceCents !== priceCents;
+  await db()
+    .update(listings)
+    .set({
+      lastSeenAt: now,
+      status: "active",
+      ...(changed ? { priceCents, updatedAt: now, gate: "pending" as const, gateReason: null } : {}),
+    })
+    .where(orm.eq(listings.id, row.id));
+  if (changed) await db().insert(pricePoints).values({ listingId: row.id, priceCents, seenAt: now });
+  counts.updated++;
+}
