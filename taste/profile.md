@@ -21,9 +21,11 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
 
 ## Sources of inspiration
 - Pinterest: https://www.pinterest.com/junaidrbhatti/ (all public boards unless excluded below)
-- Instagram accounts (named references, not scraped):
-  - @shapesusa — https://www.instagram.com/shapesusa/
-  - more TBD (Junaid picking from his following list)
+- Instagram accounts (named references, not scraped; picked from Junaid's following on 2026-10-20):
+  - Labels: @shapesusa, @poolhousenewyork, @peoplesfortune, @ateliertaro_
+  - Basketcase orbit: @basketcase.gallery, @odd_zach, @hench.offline, @blvckhoodieee (Notice Studios)
+  - Curators and creators: @artifaxing (archive), @hidden.ny, @wisdm (Wisdom Kaye), @undercoverosh
+  - Looser mood references: @aplasticplant (fit-check series), @hardtokill
 
 ## Excluded boards
 (none yet)

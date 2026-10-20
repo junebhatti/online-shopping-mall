@@ -9,4 +9,4 @@ Start Phase 1:
 4. Pinterest scrape of https://www.pinterest.com/junaidrbhatti/ into taste/ (pins + images), then draft taste/profile.md from them.
 5. Feed view built from docs/design-handoff (uniform square tiles, no reason line, three-way rating: would wear / would not wear / inspo).
 
-Pending from Junaid: Instagram accounts to reference, Pinterest boards to exclude, site name.
+Pending from Junaid: Pinterest boards to exclude, site name. Confirm the clothing_candidates URLs in config/brands.yaml.

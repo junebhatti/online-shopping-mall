@@ -137,5 +137,5 @@ Consequences for Phase 1 so this does not need a rewrite later:
 ## Open items
 - Set up eBay developer keys together (live session).
 - Which Pinterest boards to exclude, if any.
-- Instagram accounts to reference (agent scanning the following list; Junaid will pick).
+- Confirm the four clothing_candidates in config/brands.yaml (sites unverified).
 - Site name.
