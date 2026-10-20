@@ -6,7 +6,10 @@ import * as schema from "./schema.ts";
 export type Db = ReturnType<typeof createDb>;
 
 function createDb() {
-  const client = postgres(databaseUrl(), { max: 5, idle_timeout: 20 });
+  const url = databaseUrl();
+  // Neon's pooled endpoint runs PgBouncer in transaction mode, which doesn't keep prepared statements.
+  const pooled = new URL(url).hostname.includes("-pooler");
+  const client = postgres(url, { max: 5, idle_timeout: 20, prepare: !pooled });
   return drizzle(client, { schema });
 }
 
