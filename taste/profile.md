@@ -31,6 +31,13 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
 - **Shoes:** penny and horsebit loafers; retro runners and classic sneakers (New Balance, Sambas, Converse).
 - **Outerwear:** chore and work jackets; wool overcoats and unstructured blazers; fleece and
   technical shells (Patagonia, Arc'teryx, Stone Island). Not leather or suede jackets.
+- **Patterns:** pinstripe and chalk stripe, plaid and check (flannel, tartan, gingham); otherwise
+  solids. No Fair Isle or argyle.
+- **Materials:** wool and tropical wool, heavy cotton (loopwheel, duck, chino twill), cashmere
+  and merino, linen and seersucker in summer.
+- **Occasions:** class and campus, finance-adjacent (calls, interviews, office days), going out,
+  gym and errands. The feed should cover all four, not just the dressy end.
+- **Accessories:** occasional only. Cool wool hats and interesting bags here and there. No belts.
 - **Price ceilings (new, per piece):** tees $80, pants $250, outerwear $500. Luxury only on sale.
 - **Denim:** raw/selvedge and washed vintage. No black denim called out.
 - **Palette:** earth tones (olive, brown, tan, rust, khaki) and navy/indigo.
