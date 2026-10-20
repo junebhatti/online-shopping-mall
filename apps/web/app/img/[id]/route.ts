@@ -18,6 +18,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (!src) return new Response("Not found", { status: 404 });
   return new Response(null, {
     status: 302,
-    headers: { location: sizedImageUrl(src, 600), "cache-control": "public, max-age=3600" },
+    // Short cache: the worker may cut this one out soon, and then the route should serve that instead.
+    headers: { location: sizedImageUrl(src, 600), "cache-control": "public, max-age=300" },
   });
 }

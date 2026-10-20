@@ -70,7 +70,8 @@ export function toTile({ l, saved, verdict, hasCutout }: Row): Tile {
     category: l.category,
     isUsed: l.isUsed,
     meta,
-    image: `/img/${l.id}`,
+    // URL changes once a cutout exists, so a cached source-photo redirect is never reused.
+    image: `/img/${l.id}${hasCutout ? "?cut=1" : ""}`,
     hasCutout,
     isNew: Date.now() - l.firstSeenAt.getTime() < 24 * 3_600_000,
     saved,
