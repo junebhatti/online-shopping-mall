@@ -4,13 +4,14 @@ import { buildDigest } from "@mall/digest";
 import { fetchJson } from "@mall/sources";
 import { z } from "zod";
 import { log } from "../log.ts";
-import { lastOk, withRun } from "../runs.ts";
+import { lastFinished, withRun } from "../runs.ts";
 
 const SEND_HOUR = Number(process.env.DIGEST_HOUR ?? 8);
 
 /** Once a day after DIGEST_HOUR (local time): build the digest, keep a copy, email it via Resend. */
 export async function runDigest(force = false): Promise<void> {
-  const last = await lastOk("digest");
+  // Once a day whether or not sending worked, so a missing key doesn't retry every tick.
+  const last = await lastFinished("digest");
   const due = !last || Date.now() - last.getTime() > 20 * 3_600_000;
   if (!force && (!due || new Date().getHours() < SEND_HOUR)) return;
 
