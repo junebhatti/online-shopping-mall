@@ -1,5 +1,5 @@
 import { fetchShopifyProducts, mapShopifyProduct } from "@mall/sources";
-import { loadBrands } from "../config.ts";
+import { loadBrands } from "@mall/config";
 import { withRun } from "../runs.ts";
 import { markUnseenRemoved, upsertListing } from "./upsert.ts";
 

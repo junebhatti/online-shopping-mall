@@ -1,5 +1,5 @@
 import { db, listings, orm, sourceRuns } from "@mall/db";
-import { loadRules, loadTaste } from "../config.ts";
+import { loadRules, loadTaste } from "@mall/config";
 import { log } from "../log.ts";
 
 /**

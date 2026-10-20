@@ -1,6 +1,6 @@
 import { db, orm, pins } from "@mall/db";
 import { fetchBoardPins, sleep } from "@mall/sources";
-import { loadPinterest } from "../config.ts";
+import { loadPinterest } from "@mall/config";
 import { withRun } from "../runs.ts";
 
 /** Pull every configured board. New pins are inserted; embeddings are filled in by the taste step. */

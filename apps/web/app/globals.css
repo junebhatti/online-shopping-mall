@@ -1,0 +1,252 @@
+@import "tailwindcss";
+
+/* Classical design system (docs/design-handoff), ported as tokens.
+   Components use the semantic names (--ink-muted, --accent-ink, ...) so dark mode is a token swap. */
+:root {
+  --ground: #f3f2f2;
+  --surface: #eae9e9;
+  --ink: #201f1d;
+  --accent: #b68235;
+  --divider: color-mix(in srgb, #201f1d 16%, transparent);
+  --rule-strong: #201f1d;
+
+  --ink-soft: #444141; /* neutral-800 */
+  --ink-muted: #605d5d; /* neutral-700 */
+  --ink-faint: #7d7979; /* neutral-600 */
+  --ink-ghost: #9b9797; /* neutral-500 */
+  --track: #bab6b6; /* neutral-400 */
+  --tag-bg: #f8f4f4; /* neutral-100 */
+
+  --accent-ink: #5a3b0a; /* accent-800: prices, active nav */
+  --accent-hover: #7d5411; /* accent-700 */
+  --accent-line: #facb8d; /* accent-300: sale rule */
+  --accent-wash: #fff3e4; /* accent-100 */
+
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2d2b2b 16%, transparent);
+  --tile-blend: multiply; /* white product backgrounds melt into the tile in light mode */
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #1a1918;
+    --surface: #242321;
+    --ink: #ece8e2;
+    --accent: #c99a55;
+    --divider: color-mix(in srgb, #ece8e2 14%, transparent);
+    --rule-strong: #ece8e2;
+
+    --ink-soft: #d7d3d3;
+    --ink-muted: #bab6b6;
+    --ink-faint: #9b9797;
+    --ink-ghost: #7d7979;
+    --track: #605d5d;
+    --tag-bg: #2d2b2b;
+
+    --accent-ink: #e1ad66;
+    --accent-hover: #facb8d;
+    --accent-line: #7d5411;
+    --accent-wash: #3a270d;
+
+    --shadow-md: 0 3px 10px rgb(0 0 0 / 0.5);
+    --tile-blend: normal;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-ink-ghost: var(--ink-ghost);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-line: var(--accent-line);
+  --color-accent-wash: var(--accent-wash);
+  --color-divider: var(--divider);
+  --color-rule: var(--rule-strong);
+  --font-heading: var(--font-cormorant), "Cormorant Garamond", serif;
+  --font-body: var(--font-lora), "Lora", serif;
+  --spacing-s1: 4.6px;
+  --spacing-s2: 9.2px;
+  --spacing-s3: 13.8px;
+  --spacing-s4: 18.4px;
+  --spacing-s6: 27.6px;
+  --spacing-s8: 36.8px;
+}
+
+html {
+  background: var(--ground);
+}
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+::selection {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.tnum {
+  font-feature-settings: "tnum";
+}
+.caps {
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Buttons are outlined or ghost, never filled. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 9.2px 16.5px;
+  border-radius: 4px;
+  transition: background-color 120ms ease;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn-primary {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.btn-ghost {
+  color: var(--accent);
+  padding-inline: 4.6px;
+}
+.btn-ghost:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 3px 10px;
+  border-radius: 3px;
+}
+.tag-neutral {
+  background: var(--tag-bg);
+  color: var(--ink-soft);
+}
+.tag-outline {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: transparent;
+}
+
+.input {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  caret-color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+}
+.input:focus-visible {
+  border-color: var(--accent);
+  outline-offset: 0;
+}
+
+@keyframes pm-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+@keyframes pm-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.pulse {
+  animation: pm-pulse 1.6s ease-in-out infinite;
+}
+.fade-in {
+  animation: pm-in 0.5s ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse,
+  .fade-in {
+    animation: none;
+  }
+}
+
+/* Dual-thumb price slider (two stacked range inputs). */
+input[type="range"].dual {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  background: none;
+  pointer-events: none;
+  appearance: none;
+}
+input[type="range"].dual::-webkit-slider-thumb {
+  pointer-events: auto;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--ground);
+  border: 1px solid var(--accent);
+  cursor: pointer;
+}
+input[type="range"].dual::-moz-range-thumb {
+  pointer-events: auto;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--ground);
+  border: 1px solid var(--accent);
+  cursor: pointer;
+}

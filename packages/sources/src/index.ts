@@ -15,3 +15,4 @@ export {
   type EbaySummary,
 } from "./ebay.ts";
 export { fetchBoardPins, type Pin } from "./pinterest.ts";
+export { sizedImageUrl } from "./images.ts";

@@ -6,7 +6,7 @@ import {
   RawImage,
   env,
 } from "@huggingface/transformers";
-import { REPO_ROOT } from "../config.ts";
+import { REPO_ROOT } from "@mall/config";
 import { fetchImage } from "../images/fetch.ts";
 
 /** Change this and every embedding is recomputed (rows store the model they were made with). */

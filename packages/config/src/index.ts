@@ -1,10 +1,22 @@
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { parse } from "yaml";
 import { z } from "zod";
 import type { Category, Department } from "@mall/db";
 
-export const REPO_ROOT = fileURLToPath(new URL("../../../", import.meta.url));
+/**
+ * The repo root holds config/ and taste/. Found by walking up from the working
+ * directory, which works for the worker, `next dev`, and a traced Vercel build alike.
+ */
+function findRepoRoot(): string {
+  if (process.env.MALL_ROOT) return process.env.MALL_ROOT.replace(/\/?$/, "/");
+  for (let dir = process.cwd(); ; dir = dirname(dir)) {
+    if (existsSync(join(dir, "config", "brands.yaml"))) return `${dir}/`;
+    if (dirname(dir) === dir) throw new Error(`config/brands.yaml not found above ${process.cwd()}; set MALL_ROOT`);
+  }
+}
+
+export const REPO_ROOT = findRepoRoot();
 
 function loadYaml<T>(file: string, schema: z.ZodType<T>): T {
   const path = `${REPO_ROOT}${file}`;

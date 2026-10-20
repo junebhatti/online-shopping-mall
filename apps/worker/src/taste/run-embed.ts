@@ -1,5 +1,5 @@
 import { db, listings, orm, pins } from "@mall/db";
-import { loadPinterest } from "../config.ts";
+import { loadPinterest } from "@mall/config";
 import { log } from "../log.ts";
 import { EMBEDDING_MODEL, embedImage } from "./embed.ts";
 

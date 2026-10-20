@@ -1,5 +1,5 @@
 import type { Category, ListingAttributes } from "@mall/db";
-import { priceCeilingCents, type BrandConfig, type Rules } from "../config.ts";
+import { priceCeilingCents, type BrandConfig, type Rules } from "@mall/config";
 
 export type GateInput = {
   source: string;

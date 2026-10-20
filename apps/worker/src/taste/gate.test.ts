@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { loadRules, type BrandConfig } from "../config.ts";
+import { loadRules, type BrandConfig } from "@mall/config";
 import { bottomMatch, gate, hasUnnegatedWord, shoeMatch, topMatch, type GateInput } from "./gate.ts";
 
 const rules = loadRules();

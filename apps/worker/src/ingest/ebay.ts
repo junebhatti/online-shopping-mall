@@ -9,7 +9,7 @@ import {
   toCents,
   type EbayCredentials,
 } from "@mall/sources";
-import { loadQueries, loadRules } from "../config.ts";
+import { loadQueries, loadRules } from "@mall/config";
 import { log } from "../log.ts";
 import { withRun } from "../runs.ts";
 import { refreshKnownPrice, upsertListing } from "./upsert.ts";

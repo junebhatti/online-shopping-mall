@@ -3,7 +3,7 @@ import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import sharp from "sharp";
 import { z } from "zod";
 import { db, listings, orm } from "@mall/db";
-import { loadTaste, readTasteProfile } from "../config.ts";
+import { loadTaste, readTasteProfile } from "@mall/config";
 import { fetchImage } from "../images/fetch.ts";
 import { log } from "../log.ts";
 import { withRun } from "../runs.ts";

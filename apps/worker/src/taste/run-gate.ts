@@ -1,5 +1,5 @@
 import { db, listings, orm } from "@mall/db";
-import { loadBrands, loadRules } from "../config.ts";
+import { loadBrands, loadRules } from "@mall/config";
 import { log } from "../log.ts";
 import { gate } from "./gate.ts";
 

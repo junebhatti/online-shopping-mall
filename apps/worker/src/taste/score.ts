@@ -1,5 +1,5 @@
 import { db, listings, orm, pins, ratings } from "@mall/db";
-import { loadPinterest, loadTaste, type TasteConfig } from "../config.ts";
+import { loadPinterest, loadTaste, type TasteConfig } from "@mall/config";
 import { hasWord } from "./gate.ts";
 import { log } from "../log.ts";
 import { cosine, embedTexts } from "./embed.ts";

@@ -1,0 +1,12 @@
+{
+  "name": "@mall/config",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p tsconfig.json" },
+  "dependencies": {
+    "@mall/db": "*",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  }
+}
