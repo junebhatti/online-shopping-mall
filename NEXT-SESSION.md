@@ -1,6 +1,18 @@
 # Next session
 
-Read PLAN.md first (the Phases section has per-source status). Everything runs locally; nothing is deployed.
+Read PLAN.md first (the Phases section has per-source status).
+
+## Deploy status (2026-10-20, paused here)
+
+- **Neon**: live. A full copy of the local database (11,269 listings, 58-piece feed, cutouts, pins, judge verdicts)
+  was loaded with `scripts/copy-to-neon.sh`. Its URL is `NEON_DATABASE_URL` in `.env.local`.
+- **Vercel**: live, root directory `apps/web`, env `DATABASE_URL`, `AUTH_SECRET` (= `PROD_AUTH_SECRET` in .env.local),
+  `OWNER_PASSWORD` (Junaid's own). `apps/web/vercel.json` installs only the web workspace. Ask Junaid for the URL,
+  then add `SITE_URL` in Vercel and redeploy.
+- **Railway**: not started. Nothing refreshes the Neon data until the worker runs there (docs/DEPLOY.md step 2:
+  volume at `/app/.cache`, 2 GB RAM, env vars including `DATABASE_URL` = the Neon URL and `SITE_URL`).
+  `worker.Dockerfile` has never been built; watch the first Railway build log.
+- The local worker writes to the local database only, so local and Neon drift apart from here.
 
 ## State (2026-10-20, evening)
 
