@@ -2,6 +2,8 @@ import { runDigest } from "./digest/run-digest.ts";
 import { runCutouts } from "./images/run-cutouts.ts";
 import { ingestEbay } from "./ingest/ebay.ts";
 import { ingestGrailed } from "./ingest/grailed.ts";
+import { ingestPoshmark } from "./ingest/poshmark.ts";
+import { ingestVinted } from "./ingest/vinted.ts";
 import { ingestPinterest } from "./ingest/pinterest.ts";
 import { ingestShopify } from "./ingest/shopify.ts";
 import { ingestYoox } from "./ingest/yoox.ts";
@@ -23,6 +25,8 @@ const INGEST: Job[] = [
   { name: "yoox", everyHours: 12, run: ingestYoox },
   { name: "ebay", everyHours: 2, run: ingestEbay },
   { name: "grailed", everyHours: 2, run: ingestGrailed },
+  { name: "poshmark", everyHours: 2, run: ingestPoshmark },
+  { name: "vinted", everyHours: 2, run: ingestVinted },
 ];
 
 const PROCESS: Job[] = [
