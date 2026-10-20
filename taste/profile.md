@@ -16,6 +16,15 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
   than skinny. Use those two tees as the reference silhouette.
 - **Pants:** Nudie Loud Larry; Acne Studios Fall 2021 fits; Atelier Taro green pants (Instagram);
   Pool House Shibuya straight leg; vintage Ralph Lauren baggy pleated pants. Photos to follow.
+- **Pant photos sent 2026-10-20 (described, originals not in repo):**
+  1. Charcoal wool double-pleat wide-leg trousers, high rise, full length breaking over black
+     penny loafers, thin black belt, white tee tucked.
+  2. Grey pinstripe pleated wide-leg trousers, mid rise, very full straight leg, cropped white tee.
+  3. Cream cotton wide-leg workpant with knee articulation, baggy, bunched at the ankle; pale blue
+     crewneck over a yellow tee, dark leather shoes.
+  Common thread: wide and pleated, natural-waist rise, length to the shoe, tucked or short top,
+  leather shoes. Pastels (pale blue, soft yellow) are fine: the loud-colors reject is about
+  saturation, not lightness.
 - **Denim:** raw/selvedge and washed vintage. No black denim called out.
 - **Palette:** earth tones (olive, brown, tan, rust, khaki) and navy/indigo.
 
