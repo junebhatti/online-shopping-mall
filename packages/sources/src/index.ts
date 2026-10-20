@@ -16,3 +16,4 @@ export {
 } from "./ebay.ts";
 export { fetchBoardPins, type Pin } from "./pinterest.ts";
 export { sizedImageUrl } from "./images.ts";
+export { getGrailedDetail, mapGrailed, searchGrailed, type GrailedDetail, type GrailedHit } from "./grailed.ts";

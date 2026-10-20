@@ -11,14 +11,16 @@ export async function runAdmit(): Promise<void> {
   const taste = loadTaste();
   const since = new Date(Date.now() - 24 * 3_600_000);
 
-  const [{ total, recent }] = (await db()
+  const [{ first, recent }] = (await db()
     .select({
-      total: orm.count(listings.admittedAt),
+      first: orm.min(listings.admittedAt),
       recent: orm.sql<number>`count(*) filter (where ${listings.admittedAt} >= ${since.toISOString()}::timestamptz)`.mapWith(Number),
     })
-    .from(listings)) as [{ total: number; recent: number }];
+    .from(listings)) as [{ first: Date | null; recent: number }];
 
-  const budget = total === 0 ? taste.admission.initial_backfill : rules.admission.daily_limit - recent;
+  // The first day can fill up to initial_backfill so the feed doesn't start nearly empty.
+  const firstDay = !first || first >= since;
+  const budget = Math.max(rules.admission.daily_limit, firstDay ? taste.admission.initial_backfill : 0) - recent;
   if (budget <= 0) {
     log.info("admit: daily limit reached");
     return;
@@ -26,7 +28,7 @@ export async function runAdmit(): Promise<void> {
 
   const judgeWorks = await judgeIsWorking();
   const eligible = await db()
-    .select({ id: listings.id, store: listings.store, title: listings.title })
+    .select({ id: listings.id, store: listings.store, title: listings.title, brand: listings.brand, source: listings.source })
     .from(listings)
     .where(
       orm.and(
@@ -54,9 +56,11 @@ export async function runAdmit(): Promise<void> {
   for (const l of eligible) {
     if (chosen.length >= budget) break;
     const key = productKey(l.store, l.title);
-    if (seenTitles.has(key) || (perStore.get(l.store) ?? 0) >= perStoreCap) continue;
+    // Marketplaces (Grailed, eBay) hold thousands of sellers, so their cap applies per brand instead.
+    const capKey = l.source === "shopify" ? l.store : `${l.store}:${l.brand.toLowerCase()}`;
+    if (seenTitles.has(key) || (perStore.get(capKey) ?? 0) >= perStoreCap) continue;
     seenTitles.add(key);
-    perStore.set(l.store, (perStore.get(l.store) ?? 0) + 1);
+    perStore.set(capKey, (perStore.get(capKey) ?? 0) + 1);
     chosen.push(l.id);
   }
 

@@ -88,12 +88,13 @@ function checkSize(l: GateInput, rules: Rules): GateResult {
   if (TOPS.includes(l.category)) {
     const [lenMin, lenMax] = s.top_measurements.length_in;
     const [chMin, chMax] = s.top_measurements.chest_in;
-    // Measurements beat labels on resale: a vintage M can fit like a modern L.
-    if (l.isUsed && m.chestIn && (m.chestIn < chMin || m.chestIn > chMax)) return fail(`chest ${m.chestIn}" out of range`);
-    if (l.isUsed && m.lengthIn && (m.lengthIn < lenMin || m.lengthIn > lenMax)) return fail(`length ${m.lengthIn}" out of range`);
+    // Measurements beat labels on resale (used or new with tags): a vintage M can fit like a modern L.
+    const resale = l.source !== "shopify";
+    if (resale && m.chestIn && (m.chestIn < chMin || m.chestIn > chMax)) return fail(`chest ${m.chestIn}" out of range`);
+    if (resale && m.lengthIn && (m.lengthIn < lenMin || m.lengthIn > lenMax)) return fail(`length ${m.lengthIn}" out of range`);
     const hit = labels.find((x) => topMatch(x, s.tops));
     if (hit) return { passed: true, matchedSize: hit };
-    if (l.isUsed && m.chestIn) return { passed: true, matchedSize: `${m.chestIn}" chest` };
+    if (resale && m.chestIn) return { passed: true, matchedSize: `${m.chestIn}" chest` };
     return fail("size M not available");
   }
 
