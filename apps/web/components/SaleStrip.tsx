@@ -16,7 +16,8 @@ export async function SaleStrip() {
   // Only sources that bring in listings count as "watching for sales".
   const NOT_SHOPPING = new Set(["pinterest", "judge", "digest"]);
   const shopping = status.filter((s) => !NOT_SHOPPING.has(s.source));
-  const watching = shopping.reduce((n, s) => n + s.targets, 0);
+  // Each brand store counts once; a marketplace counts once however many searches it runs.
+  const watching = shopping.reduce((n, s) => n + (s.source === "shopify" ? s.targets : 1), 0);
   const latest = shopping
     .filter((s) => s.lastFinishedAt)
     .sort((a, b) => b.lastFinishedAt!.getTime() - a.lastFinishedAt!.getTime())[0];

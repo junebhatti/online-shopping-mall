@@ -60,7 +60,8 @@ export function toTile({ l, saved, verdict, hasCutout }: Row): Tile {
       : (color ?? null);
   return {
     id: l.id,
-    brand: l.isUsed && l.source !== "shopify" && !/^vintage\b/i.test(l.brand) ? `Vintage ${l.brand}` : l.brand,
+    // "Vintage" only when the listing says so; a used modern piece is just used.
+    brand: /\bvintage\b/i.test(l.title) && !/^vintage\b/i.test(l.brand) ? `Vintage ${l.brand}` : l.brand,
     name: displayName(l.title),
     store: l.store,
     url: l.url,
