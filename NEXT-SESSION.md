@@ -9,7 +9,9 @@ Read PLAN.md first (the Phases section has per-source status). Everything runs l
   vinted, then watches, gate, embed, score, judge, admit, cutouts, and digest.
 - Sources live: Shopify (LA Apparel, Alo, Pool House), Yoox men's sale, Grailed, Poshmark, Vinted, Pinterest.
   About 1,100 listings past the gate, 60 admitted to the feed (20 a day from here).
-- eBay adapter is built and recorded as failing until keys exist. Claude judge likewise until `ANTHROPIC_API_KEY` is set.
+- eBay adapter is built and recorded as failing until keys exist.
+- Claude judge is live (key added 2026-10-20). It judges 30 per cycle, about $0.002 per batch; only verdicts with
+  fit >= 7 (`judge.min_fit` in config/taste.yaml) reach the feed. All 58 pieces in the feed passed it.
 - Digest builds daily after 8am and is saved in `.data/digests`; it emails once Resend is configured. Preview at /digest.
 - Owner password: `OWNER_PASSWORD` in `.env.local` (a generated test value).
 - `npm test` (44 tests), `npm run typecheck`, `npm run build` all clean.
@@ -21,10 +23,8 @@ Read PLAN.md first (the Phases section has per-source status). Everything runs l
    marketplace account deletion notice. The mall stores listing data only, no eBay user data, so the exemption applies;
    let Junaid confirm the wording. Put `EBAY_CLIENT_ID` / `EBAY_CLIENT_SECRET` in `.env.local`, then
    `npm run worker:once -- --only=ebay,gate,embed,score,admit,cutouts` and check categories 1059 / 93427 and size aspects.
-2. **Claude key** in `.env.local` (`ANTHROPIC_API_KEY`), then `npm run worker:once -- --only=judge,admit`.
-   Check the judge's verdicts on the item pages (owner sees the note).
-3. **Resend** for the digest (`RESEND_API_KEY`, `DIGEST_TO`); `onboarding@resend.dev` can send to the signup address.
-4. **Deploy** per docs/DEPLOY.md.
+2. **Resend** for the digest (`RESEND_API_KEY`, `DIGEST_TO`); `onboarding@resend.dev` can send to the signup address.
+3. **Deploy** per docs/DEPLOY.md.
 
 ## Next to build
 

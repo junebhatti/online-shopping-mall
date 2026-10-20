@@ -142,7 +142,6 @@ Consequences for Phase 1 so this does not need a rewrite later:
 
 ## Open items
 - eBay developer account: email confirmation, then keys (in progress with Junaid).
-- Claude API key so the taste judge runs (until then admission uses a score floor).
 - Resend account for the digest email (`RESEND_API_KEY`, `DIGEST_TO`).
 - Deploy: Neon, Vercel, Railway (docs/DEPLOY.md).
 - Confirm the price ceilings marked "guess" in config/rules.yaml.
