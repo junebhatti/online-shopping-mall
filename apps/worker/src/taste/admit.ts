@@ -1,4 +1,4 @@
-import { db, listings, orm, sourceRuns } from "@mall/db";
+import { db, listings, orm, ratings, saves, sourceRuns } from "@mall/db";
 import { loadRules, loadTaste } from "@mall/config";
 import { log } from "../log.ts";
 
@@ -10,6 +10,8 @@ export async function runAdmit(): Promise<void> {
   const rules = loadRules();
   const taste = loadTaste();
   const since = new Date(Date.now() - 24 * 3_600_000);
+  const judgeWorks = await judgeIsWorking();
+  if (judgeWorks) await dropJudgedOut(taste.judge.min_fit);
 
   const [{ first, recent }] = (await db()
     .select({
@@ -26,7 +28,6 @@ export async function runAdmit(): Promise<void> {
     return;
   }
 
-  const judgeWorks = await judgeIsWorking();
   const eligible = await db()
     .select({ id: listings.id, store: listings.store, title: listings.title, brand: listings.brand, source: listings.source })
     .from(listings)
@@ -37,7 +38,7 @@ export async function runAdmit(): Promise<void> {
         orm.isNull(listings.admittedAt),
         orm.isNotNull(listings.score),
         judgeWorks
-          ? orm.eq(listings.judgeVerdict, "admit")
+          ? orm.and(orm.eq(listings.judgeVerdict, "admit"), orm.gte(listings.judgeFit, taste.judge.min_fit))
           : orm.gte(listings.score, taste.judge.min_score_without_judge),
       ),
     )
@@ -88,4 +89,24 @@ export function productKey(store: string, title: string): string {
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
   return `${store}|${t}`;
+}
+
+/**
+ * Pieces let in before the judge worked, that it has since scored below min_fit, leave the feed.
+ * Anything the owner saved or rated stays.
+ */
+async function dropJudgedOut(minFit: number): Promise<void> {
+  const dropped = await db()
+    .update(listings)
+    .set({ admittedAt: null })
+    .where(
+      orm.and(
+        orm.isNotNull(listings.admittedAt),
+        orm.or(orm.eq(listings.judgeVerdict, "skip"), orm.lt(listings.judgeFit, minFit)),
+        orm.sql`not exists (select 1 from ${saves} s where s.listing_id = ${listings.id})`,
+        orm.sql`not exists (select 1 from ${ratings} r where r.listing_id = ${listings.id})`,
+      ),
+    )
+    .returning({ id: listings.id });
+  if (dropped.length) log.info(`admit: ${dropped.length} pieces left the feed after the judge scored them below ${minFit}`);
 }

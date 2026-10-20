@@ -117,7 +117,12 @@ const tasteSchema = z.object({
     inspo: z.number(),
   }),
   fragrance_favorites: z.array(z.string()),
-  judge: z.object({ model: z.string(), batch_size: z.number().int().positive(), min_score_without_judge: z.number() }),
+  judge: z.object({
+    model: z.string(),
+    batch_size: z.number().int().positive(),
+    min_fit: z.number().int().min(1).max(10),
+    min_score_without_judge: z.number(),
+  }),
   admission: z.object({ initial_backfill: z.number().int(), max_share_per_store: z.number().gt(0).lte(1) }),
 });
 

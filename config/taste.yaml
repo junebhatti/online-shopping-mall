@@ -60,6 +60,8 @@ judge:
   # Claude Haiku keeps judging under the $25/month budget in PLAN.md (about $1-2/month at this volume).
   model: claude-haiku-5-5
   batch_size: 30
+  # Only verdicts at or above this fit (1-10) get into the feed. The judge says "admit" generously; fit is the real filter.
+  min_fit: 7
   # Without a judge, only listings at least this many standard deviations above the pool average get in.
   min_score_without_judge: 0.75
 

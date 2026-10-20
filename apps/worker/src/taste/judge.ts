@@ -40,12 +40,12 @@ export async function runJudge(): Promise<void> {
         orm.and(
           orm.eq(listings.gate, "passed"),
           orm.eq(listings.status, "active"),
-          orm.isNull(listings.admittedAt),
           orm.isNull(listings.judgeVerdict),
           orm.isNotNull(listings.score),
         ),
       )
-      .orderBy(orm.desc(listings.score))
+      // Pieces already in the feed (admitted before the judge worked) are judged first.
+      .orderBy(orm.sql`${listings.admittedAt} is null`, orm.desc(listings.score))
       .limit(taste.judge.batch_size);
     counts.fetched = candidates.length;
     if (candidates.length === 0) return;
