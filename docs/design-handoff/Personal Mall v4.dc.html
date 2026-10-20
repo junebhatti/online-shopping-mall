@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/classical-74f217c9-8e1d-4882-a318-2d996f8a6fb5/styles.css">
+<script src="_ds/classical-74f217c9-8e1d-4882-a318-2d996f8a6fb5/_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)}a{color:var(--color-accent-700)}a:hover{color:var(--color-accent)}@keyframes pmPulse{0%,100%{opacity:1}50%{opacity:.25}}@keyframes pmIn{from{opacity:0}to{opacity:1}}input[type=range].pm-dual{position:absolute;inset:0;width:100%;margin:0;background:none;pointer-events:none;-webkit-appearance:none;appearance:none}input[type=range].pm-dual::-webkit-slider-thumb{pointer-events:auto;-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--color-bg);border:1px solid var(--color-accent);cursor:pointer}input[type=range].pm-dual::-moz-range-thumb{pointer-events:auto;width:13px;height:13px;border-radius:50%;background:var(--color-bg);border:1px solid var(--color-accent);cursor:pointer}</style>
+</helmet>
+<div style="min-height:100vh;">
+  <header style="position:sticky;top:0;z-index:10;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--space-8);padding:var(--space-3) var(--space-6);background:var(--color-bg);border-bottom:1px solid var(--color-divider);">
+    <nav style="display:flex;gap:var(--space-4);">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="3">
+        <button onClick="{{ v.go }}" style="all:unset;cursor:pointer;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:4px 0;color:{{ v.color }};border-bottom:1px solid {{ v.rule }};" style-hover="color:var(--color-accent-700)">{{ v.label }}<span style="font-size:9px;font-feature-settings:'tnum';color:var(--color-neutral-600);vertical-align:super;margin-left:2px;">{{ v.count }}</span></button>
+      </sc-for>
+    </nav>
+    <form onSubmit="{{ onSearch }}" style="display:flex;align-items:center;gap:var(--space-2);border-bottom:1px solid var(--color-divider);padding:0 0 0 2px;min-width:0;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none;color:var(--color-neutral-600);"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search every source — “vintage Brooks Brothers oxford”, “Stone Island on sale”" style="flex:1;min-width:0;border:none;background:transparent;font-family:var(--font-body);font-size:13px;color:var(--color-text);outline:none;padding:8px 0;">
+      <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}">
+        <button type="button" class="btn btn-ghost" onClick="{{ clearSearch }}" style="font-size:12px;">Clear</button>
+      </sc-if>
+    </form>
+    <button class="btn btn-icon btn-ghost" onClick="{{ goSettings }}" aria-label="Settings" style="color:{{ settingsColor }};">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    </button>
+  </header>
+
+  <div style="display:flex;align-items:center;gap:var(--space-3);padding:7px var(--space-6);font-size:11px;color:var(--color-neutral-700);border-bottom:1px solid var(--color-divider);">
+    <span style="width:6px;height:6px;border-radius:50%;background:var(--color-accent);animation:pmPulse 1.6s ease-in-out infinite;"></span>
+    <span style="font-feature-settings:'tnum';">{{ scanLabel }}</span>
+    <span style="color:var(--color-neutral-500);">·</span>
+    <span style="font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ scanFound }}</span>
+  </div>
+
+  <main style="padding:var(--space-6) var(--space-6) 120px;display:flex;flex-direction:column;gap:56px;">
+
+    <sc-if value="{{ isSearch }}" hint-placeholder-val="{{ false }}">
+      <section style="display:flex;flex-direction:column;gap:var(--space-2);">
+        <div style="display:flex;align-items:baseline;gap:var(--space-4);flex-wrap:wrap;">
+          <h1 style="margin:0;font-family:var(--font-heading);font-weight:400;font-size:40px;line-height:1.05;">“{{ lastQuery }}”</h1>
+          <span style="font-size:12px;color:var(--color-neutral-700);font-feature-settings:'tnum';">{{ searchSummary }}</span>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ hasBrand }}" hint-placeholder-val="{{ false }}">
+      <button class="tag tag-outline" onClick="{{ clearBrand }}" style="cursor:pointer;background:transparent;align-self:flex-start;">Only {{ brandLabel }} ×</button>
+    </sc-if>
+
+    <sc-if value="{{ showSale }}" hint-placeholder-val="{{ true }}">
+      <section style="display:flex;flex-direction:column;gap:var(--space-3);">
+        <div style="display:flex;align-items:baseline;gap:var(--space-3);border-bottom:1px solid var(--color-accent-300);padding-bottom:8px;">
+          <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-800);">On sale now</span>
+          <span style="font-size:11px;color:var(--color-neutral-700);font-feature-settings:'tnum';">{{ saleCount }}</span>
+          <span style="margin-left:auto;font-size:11px;font-style:italic;color:var(--color-neutral-700);">newest finds first, then biggest markdown</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-4) 8px;">
+          <sc-for list="{{ saleItems }}" as="it" hint-placeholder-count="8">
+            <article style="display:flex;flex-direction:column;gap:6px;min-width:0;animation:pmIn .5s ease both;">
+              <div style="position:relative;aspect-ratio:1/1;background:var(--color-surface);display:grid;place-items:center;">
+                <div style="display:flex;flex-direction:column;align-items:center;width:{{ it.w }};">
+                  <sc-if value="{{ it.isBottle }}" hint-placeholder-val="{{ false }}"><div style="width:34%;height:10px;background:var(--color-neutral-800);border-radius:2px 2px 0 0;"></div></sc-if>
+                  <div style="width:100%;aspect-ratio:{{ it.ar }};background:{{ it.tint }};border-radius:var(--radius-sm);"></div>
+                </div>
+                <div style="position:absolute;left:8px;top:7px;display:flex;flex-direction:column;gap:2px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-feature-settings:'tnum';">
+                  <span style="color:var(--color-accent-800);">−{{ it.pct }}%</span>
+                  <sc-if value="{{ it.isNew }}" hint-placeholder-val="{{ false }}"><span style="color:var(--color-neutral-700);">Just found</span></sc-if>
+                </div>
+                <button onClick="{{ it.onSave }}" aria-label="Save" style="all:unset;cursor:pointer;position:absolute;right:2px;top:2px;width:30px;height:30px;display:grid;place-items:center;color:{{ it.heartColor }};" style-hover="color:var(--color-accent)"><svg width="14" height="14" viewBox="0 0 24 24" fill="{{ it.heartFill }}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:1px;font-size:11px;line-height:1.35;">
+                <span style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-700);">{{ it.brandCaps }}</span>
+                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ it.name }}</span>
+                <div style="display:flex;gap:6px;font-feature-settings:'tnum';">
+                  <span style="color:var(--color-accent-800);">{{ it.price }}</span>
+                  <span style="color:var(--color-neutral-600);text-decoration:line-through;">{{ it.was }}</span>
+                  <span style="margin-left:auto;color:var(--color-neutral-600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ it.store }}</span>
+                </div>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+        <sc-if value="{{ hasMoreSale }}" hint-placeholder-val="{{ false }}">
+          <button class="btn btn-ghost" onClick="{{ toggleSaleAll }}" style="align-self:flex-start;font-size:12px;">{{ saleMoreLabel }}</button>
+        </sc-if>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ showLooks }}" hint-placeholder-val="{{ true }}">
+      <section style="display:flex;flex-direction:column;gap:var(--space-3);">
+        <div style="display:flex;align-items:baseline;gap:var(--space-3);border-bottom:1px solid var(--color-divider);padding-bottom:8px;">
+          <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;">{{ looksLabel }}</span>
+          <span style="font-size:11px;font-style:italic;color:var(--color-neutral-700);">{{ looksNote }}</span>
+          <sc-if value="{{ looksLink }}" hint-placeholder-val="{{ true }}">
+            <button class="btn btn-ghost" onClick="{{ goInspo }}" style="margin-left:auto;font-size:12px;">All looks →</button>
+          </sc-if>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,560px),1fr));gap:var(--space-8) var(--space-6);">
+          <sc-for list="{{ looks }}" as="lk" hint-placeholder-count="2">
+            <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+              <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;">
+                <sc-for list="{{ lk.pieces }}" as="it" hint-placeholder-count="4">
+                  <button onClick="{{ it.onSave }}" title="{{ it.tooltip }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;gap:5px;min-width:0;">
+                    <div style="position:relative;aspect-ratio:3/4;background:var(--color-surface);display:grid;place-items:center;">
+                      <div style="display:flex;flex-direction:column;align-items:center;width:{{ it.w }};">
+                        <sc-if value="{{ it.isBottle }}" hint-placeholder-val="{{ false }}"><div style="width:34%;height:10px;background:var(--color-neutral-800);border-radius:2px 2px 0 0;"></div></sc-if>
+                        <div style="width:100%;aspect-ratio:{{ it.ar }};background:{{ it.tint }};border-radius:var(--radius-sm);"></div>
+                      </div>
+                      <span style="position:absolute;right:7px;top:6px;color:{{ it.heartColor }};font-size:11px;">{{ it.savedMark }}</span>
+                    </div>
+                    <span style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ it.brandCaps }}</span>
+                    <span style="font-size:11px;margin-top:-4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ it.name }} · {{ it.price }}</span>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="display:flex;align-items:baseline;gap:var(--space-3);">
+                <span style="font-family:var(--font-heading);font-size:20px;">{{ lk.title }}</span>
+                <span style="font-size:11px;font-style:italic;color:var(--color-accent-800);">{{ lk.reason }}</span>
+                <span style="margin-left:auto;font-size:11px;font-feature-settings:'tnum';color:var(--color-neutral-700);">{{ lk.total }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+      <section style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--space-8) 72px;max-width:1200px;">
+        <div style="display:flex;flex-direction:column;gap:var(--space-6);">
+          <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+            <h1 style="margin:0;font-family:var(--font-heading);font-weight:400;font-size:44px;line-height:1;">Settings</h1>
+            <p style="margin:0;max-width:60ch;font-size:13px;line-height:1.55;text-align:justify;color:var(--color-neutral-800);">The feed always mixes every brand below, so no single label takes over. Tap a name to look at just that brand for a moment.</p>
+          </div>
+          <sc-for list="{{ brandGroups }}" as="g" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;">
+              <div style="display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--color-text);padding-bottom:6px;">
+                <span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;">{{ g.label }}</span>
+                <span style="font-size:11px;font-style:italic;color:var(--color-neutral-700);">{{ g.note }}</span>
+              </div>
+              <sc-for list="{{ g.brands }}" as="b" hint-placeholder-count="5">
+                <button onClick="{{ b.open }}" style="all:unset;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) 60px;gap:var(--space-4);align-items:baseline;padding:9px 0;border-bottom:1px solid var(--color-divider);" style-hover="color:var(--color-accent-700)">
+                  <span style="font-family:var(--font-heading);font-size:19px;">{{ b.name }}</span>
+                  <span style="font-size:12px;font-style:italic;color:var(--color-neutral-700);">{{ b.note }}</span>
+                  <span style="font-size:11px;text-align:right;font-feature-settings:'tnum';color:var(--color-neutral-700);">{{ b.count }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+        <aside style="display:flex;flex-direction:column;gap:var(--space-6);padding-top:12px;">
+          <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+            <span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--color-text);padding-bottom:6px;">Sale watch</span>
+            <sc-for list="{{ storeRows }}" as="r" hint-placeholder-count="5">
+              <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--color-divider);"><span>{{ r.name }}</span><span style="font-size:11px;font-style:italic;color:var(--color-neutral-700);">{{ r.note }}</span></div>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+            <span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--color-text);padding-bottom:6px;">Sizes</span>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <span class="tag tag-neutral">Tops M</span><span class="tag tag-neutral">Waist 32</span><span class="tag tag-neutral">Inseam 30</span><span class="tag tag-neutral">Shoe 10</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+            <span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--color-text);padding-bottom:6px;">Refresh</span>
+            <div class="seg" style="align-self:flex-start;">
+              <sc-for list="{{ liveOpts }}" as="t" hint-placeholder-count="2">
+                <label class="seg-opt"><input type="radio" name="live" checked="{{ t.on }}" onChange="{{ t.pick }}" style="position:absolute;opacity:0;pointer-events:none;">{{ t.label }}</label>
+              </sc-for>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+      <section style="display:flex;flex-direction:column;gap:var(--space-3);">
+        <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;border-bottom:1px solid var(--color-divider);padding-bottom:8px;">
+          <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;">{{ gridLabel }}</span>
+          <span style="font-size:11px;color:var(--color-neutral-700);font-feature-settings:'tnum';">{{ gridCount }}</span>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--color-neutral-700);">
+            <span style="font-feature-settings:'tnum';min-width:32px;text-align:right;">{{ minLabel }}</span>
+            <div style="position:relative;width:150px;height:15px;">
+              <div style="position:absolute;left:0;right:0;top:7px;height:1px;background:var(--color-neutral-400);"></div>
+              <div style="position:absolute;top:7px;height:1px;background:var(--color-accent);left:{{ trackLeft }};right:{{ trackRight }};"></div>
+              <input class="pm-dual" type="range" min="0" max="{{ priceCap }}" step="5" value="{{ minPrice }}" onChange="{{ onMin }}" aria-label="Minimum price">
+              <input class="pm-dual" type="range" min="0" max="{{ priceCap }}" step="5" value="{{ maxPrice }}" onChange="{{ onMax }}" aria-label="Maximum price">
+            </div>
+            <span style="font-feature-settings:'tnum';min-width:36px;">{{ maxLabel }}</span>
+          </div>
+        </div>
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0;font-family:var(--font-heading);font-size:22px;font-style:italic;color:var(--color-neutral-700);">{{ emptyLabel }}</p>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-4) 8px;">
+          <sc-for list="{{ items }}" as="it" hint-placeholder-count="18">
+            <article style="display:flex;flex-direction:column;gap:6px;min-width:0;animation:pmIn .5s ease both;">
+              <div style="position:relative;aspect-ratio:1/1;background:var(--color-surface);display:grid;place-items:center;">
+                <div style="display:flex;flex-direction:column;align-items:center;width:{{ it.w }};">
+                  <sc-if value="{{ it.isBottle }}" hint-placeholder-val="{{ false }}"><div style="width:34%;height:10px;background:var(--color-neutral-800);border-radius:2px 2px 0 0;"></div></sc-if>
+                  <div style="width:100%;aspect-ratio:{{ it.ar }};background:{{ it.tint }};border-radius:var(--radius-sm);"></div>
+                </div>
+                <div style="position:absolute;left:8px;top:7px;display:flex;flex-direction:column;gap:2px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;">
+                  <sc-if value="{{ it.hasReason }}" hint-placeholder-val="{{ false }}"><span style="color:var(--color-accent-800);">For you</span></sc-if>
+                  <sc-if value="{{ it.isNew }}" hint-placeholder-val="{{ false }}"><span style="color:var(--color-neutral-700);">Just in</span></sc-if>
+                  <sc-if value="{{ it.used }}" hint-placeholder-val="{{ false }}"><span style="color:var(--color-neutral-700);">{{ it.usedTag }}</span></sc-if>
+                </div>
+                <button onClick="{{ it.onSave }}" aria-label="Save" style="all:unset;cursor:pointer;position:absolute;right:2px;top:2px;width:30px;height:30px;display:grid;place-items:center;color:{{ it.heartColor }};" style-hover="color:var(--color-accent)"><svg width="14" height="14" viewBox="0 0 24 24" fill="{{ it.heartFill }}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:1px;font-size:11px;line-height:1.35;">
+                <span style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-700);">{{ it.brandCaps }}</span>
+                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ it.name }}</span>
+                <div style="display:flex;gap:6px;font-feature-settings:'tnum';">
+                  <span>{{ it.price }}</span>
+                  <span style="margin-left:auto;color:var(--color-neutral-600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ it.meta }}</span>
+                </div>
+                <sc-if value="{{ it.hasReason }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-style:italic;color:var(--color-accent-800);">{{ it.reason }}</span>
+                </sc-if>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;refreshSeconds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:6,&quot;min&quot;:0,&quot;max&quot;:30,&quot;step&quot;:1,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;showReasons&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const CATS = {
+  Outerwear: { code: 'JK', slot: 'outer', ar: '1/1.05', w: '58%', names: ['Detroit Jacket', 'Chore Coat', 'Trucker Jacket', 'Harrington Jacket', 'Field Jacket', 'Suede Trucker', 'Wool Car Coat'] },
+  Fleece: { code: 'FL', slot: 'outer', ar: '1/1', w: '56%', names: ['Retro-X Fleece', 'Snap-T Pullover', 'Synchilla Vest', 'Pile Fleece Jacket'] },
+  Knitwear: { code: 'KN', slot: 'top', ar: '1/1', w: '56%', names: ['Crewneck Sweatshirt', 'Hooded Sweatshirt', 'Quarter Zip', 'Cable Knit Sweater', 'Merino Crew', 'Shetland Crew', 'Striped Crewneck', 'Mohair Cardigan'] },
+  Shirts: { code: 'SH', slot: 'top', ar: '1/1.1', w: '52%', names: ['Oxford Shirt', 'Flannel Overshirt', 'Polo Shirt', 'Chamois Shirt', 'Button Down', 'Rugby Shirt'] },
+  Tees: { code: 'TS', slot: 'top', ar: '1/.95', w: '54%', names: ['Heavyweight Tee', 'Pocket Tee', 'Ringer Tee', 'Garment Dyed Tee', 'Henley', 'Long Sleeve Tee'] },
+  Denim: { code: 'DN', slot: 'bottom', ar: '1/2', w: '30%', names: ['Gritty Jackson', 'Breezy Britt', 'Straight Jean', 'Painter Jean', '1996 Loose Jean'] },
+  Trousers: { code: 'TR', slot: 'bottom', ar: '1/2.1', w: '28%', names: ['Double Knee Pant', 'Carpenter Pant', 'Pleated Trouser', 'Fatigue Pant', 'ABC Pant', 'Chino', 'Corduroy Trouser'] },
+  Accessories: { code: 'AC', slot: 'extra', ar: '1/.6', w: '48%', names: ['Watch Hat', 'Canvas Tote', 'Leather Belt', 'Six Panel Cap', 'Wool Scarf'] },
+  Fragrance: { code: 'FR', slot: 'extra', ar: '1/1.3', w: '28%', names: [] },
+  Underwear: { code: 'UW', slot: 'none', ar: '1/.7', w: '42%', names: [] }
+};
+const COLORS = [['Washed Black', 'var(--color-neutral-800)'], ['Charcoal', 'var(--color-neutral-700)'], ['Heather Grey', 'var(--color-neutral-400)'], ['Ecru', 'var(--color-accent-200)'], ['Indigo', 'oklch(0.42 0.06 260)'], ['Hamilton Brown', 'var(--color-accent-600)'], ['Faded Navy', 'oklch(0.36 0.04 255)'], ['Forest', 'oklch(0.42 0.05 150)'], ['Moss', 'oklch(0.55 0.07 125)'], ['Oatmeal', 'var(--color-accent-100)'], ['Rust', 'oklch(0.52 0.1 45)'], ['Stone', 'var(--color-neutral-300)']];
+const B = (group, t, cats, note, extra = {}) => ({ group, t, cats, note, ...extra });
+const BRAND_INFO = {
+  'Buck Mason': B('clothing', .5, ['Tees', 'Knitwear', 'Shirts', 'Outerwear', 'Denim'], 'heavyweight tees, American basics'),
+  'Ralph Lauren': B('clothing', .65, ['Shirts', 'Knitwear', 'Outerwear', 'Trousers', 'Accessories'], 'oxfords, cable knits, chinos'),
+  'Nudie Jeans': B('clothing', .55, ['Denim', 'Denim', 'Tees', 'Shirts'], 'raw and washed denim'),
+  'Carhartt': B('clothing', .3, ['Outerwear', 'Trousers', 'Accessories', 'Knitwear'], 'Detroit jackets, double knees'),
+  'Basketcase Gallery': B('clothing', .75, ['Tees', 'Knitwear', 'Accessories', 'Outerwear'], 'graphic tees, limited drops', { noSale: true }),
+  'LA Apparel': B('clothing', .1, ['Tees', 'Knitwear', 'Trousers'], 'blanks, fleece, garment dye', { noSale: true }),
+  'Maison Margiela': B('clothing', 1, ['Knitwear', 'Outerwear', 'Trousers', 'Shirts', 'Fragrance'], 'clothing and Replica fragrances', { names: { Fragrance: ['Replica Jazz Club', 'Replica By the Fireplace', 'Replica Lazy Sunday Morning', 'Replica Under the Lemon Trees'] } }),
+  'Acne Studios': B('clothing', .9, ['Denim', 'Knitwear', 'Outerwear', 'Accessories'], 'denim, mohair, scarves'),
+  'Stone Island': B('clothing', .9, ['Outerwear', 'Knitwear', 'Trousers'], 'garment-dyed outerwear, crewnecks'),
+  'rag & bone': B('clothing', .6, ['Denim', 'Tees', 'Knitwear', 'Outerwear'], 'denim, tees, knits'),
+  'Theory': B('clothing', .6, ['Trousers', 'Shirts', 'Knitwear', 'Outerwear'], 'trousers, merino, tailoring'),
+  'Lululemon': B('clothing', .45, ['Trousers', 'Knitwear', 'Tees'], 'ABC pants, half zips'),
+  'Banana Republic': B('clothing', .35, ['Knitwear', 'Shirts', 'Trousers', 'Outerwear'], 'knitwear, chinos, suede'),
+  'Merz b. Schwanen': B('clothing', .55, ['Tees', 'Knitwear'], 'loopwheeled tees and henleys', { noSale: true }),
+  'Calvin Klein': B('essentials', .2, ['Underwear'], 'underwear', { names: { Underwear: ['Cotton Stretch Boxer Brief 3-Pack', 'Modern Cotton Trunk', 'Classic Fit Boxer 3-Pack'] } }),
+  'Jo Malone': B('fragrance', .6, ['Fragrance'], 'colognes', { names: { Fragrance: ['Wood Sage & Sea Salt', 'English Pear & Freesia', 'Myrrh & Tonka', 'Lime Basil & Mandarin'] } }),
+  'Jean Paul Gaultier': B('fragrance', .5, ['Fragrance'], 'Le Male and the line', { names: { Fragrance: ['Le Male', 'Le Male Elixir', 'Le Beau', 'Le Male Le Parfum'] } }),
+  'Patagonia': B('vintage', .5, ['Fleece', 'Fleece', 'Outerwear', 'Shirts'], 'Retro-X, Snap-T, Synchilla'),
+  'Woolrich': B('vintage', .55, ['Outerwear', 'Shirts', 'Knitwear'], 'wool plaid, chamois'),
+  'Russell Athletic': B('vintage', .2, ['Knitwear', 'Tees'], 'made-in-USA sweats'),
+  'Gap': B('vintage', .25, ['Tees', 'Knitwear', 'Denim', 'Shirts'], '90s logo sweats, pocket tees'),
+  'Brooks Brothers': B('vintage', .55, ['Shirts', 'Knitwear', 'Outerwear'], 'oxfords, Shetland, camel hair')
+};
+const ALL_BRANDS = Object.keys(BRAND_INFO);
+const CLOTHING = ALL_BRANDS.filter(b => BRAND_INFO[b].group === 'clothing');
+const SMALLS = ALL_BRANDS.filter(b => ['fragrance', 'essentials'].includes(BRAND_INFO[b].group));
+const NEW_BRANDS = [...CLOTHING, ...SMALLS];
+const VINTAGE = ALL_BRANDS.filter(b => BRAND_INFO[b].group === 'vintage');
+const STORES = ['Nordstrom', 'Macy’s', 'Bloomingdale’s'];
+const MARKETS = ['Depop', 'eBay'];
+const SCAN = [...STORES, ...NEW_BRANDS.filter(b => !BRAND_INFO[b].noSale).map(b => b + '.com'), ...MARKETS];
+const CONDS = ['Excellent', 'Very good', 'Good', 'Worn in', 'Deadstock'];
+const SIZES = ['M', 'M', 'L', '32', '31'];
+const DECADES = ['80s', '90s', '90s', 'Y2K'];
+const PCTS = [20, 25, 30, 30, 40, 40, 50, 60];
+const PRICE_CAP = 500;
+const SAVED_SEED = ['Detroit Jacket', 'Retro-X Fleece', 'Replica Jazz Club', 'Gritty Jackson', 'Shetland Crew'];
+const LOOK_TITLES = ['Workwear, washed', 'Oxford and denim', 'Weekend fleece', 'Quiet tailoring', 'Faded athletic', 'Brown on brown', 'Knit and chino', 'Navy, all over'];
+
+let seed = 31;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const pick = a => a[Math.floor(rnd() * a.length)];
+let uid = 0;
+
+function makeItem(opts = {}) {
+  const brand = opts.brand || (opts.used ? pick([...CLOTHING, ...VINTAGE, ...VINTAGE]) : rnd() < .22 ? pick(VINTAGE) : rnd() < .1 ? pick(SMALLS) : pick(CLOTHING));
+  const info = BRAND_INFO[brand];
+  const vintage = info.group === 'vintage';
+  const cat = opts.cat && info.cats.includes(opts.cat) ? opts.cat : pick(info.cats);
+  const c = CATS[cat];
+  const names = (info.names && info.names[cat]) || c.names;
+  const name = opts.name && names.includes(opts.name) ? opts.name : pick(names);
+  const isFrag = cat === 'Fragrance', isUw = cat === 'Underwear';
+  const used = vintage || (!isFrag && !isUw && (opts.used ?? rnd() < .22));
+  const color = isFrag ? ['100 ml', pick(['var(--color-accent-200)', 'var(--color-accent-300)', 'var(--color-neutral-200)', 'var(--color-accent-400)'])] : pick(COLORS);
+  let retail = isFrag ? pick([135, 150, 165, 175, 195]) : isUw ? pick([34, 42, 49, 59]) : Math.round((40 + info.t * 300 + rnd() * 120) / 5) * 5;
+  let price = used ? Math.max(15, Math.round(retail * (.3 + rnd() * .35) / 5) * 5) : retail;
+  let sale = null;
+  if ((opts.sale ?? rnd() < .25) && !info.noSale) {
+    const pct = used ? pick([15, 20, 25]) : pick(PCTS);
+    const store = used ? 'Price drop' : (rnd() < .7 ? pick(STORES) : brand + '.com');
+    const was = price;
+    price = Math.max(10, Math.round(was * (1 - pct / 100)));
+    sale = { pct, was, store };
+  }
+  uid++;
+  return { id: uid, cat, slot: c.slot, name, color: color[0], tint: color[1], brand, vintage, used, isFrag,
+    source: used ? (opts.source || pick(MARKETS)) : (sale && STORES.includes(sale.store) ? sale.store : brand),
+    decade: vintage ? pick(DECADES) : null, retail, price, sale,
+    cond: used ? pick(CONDS) : null, size: used ? pick(SIZES) : null, isNew: !!opts.isNew, born: Date.now(), pickd: rnd() < .3 && !isUw };
+}
+
+function mix(list) {
+  const out = [], rest = list.slice();
+  while (rest.length) {
+    const prev = out.slice(-2).map(i => i.brand);
+    let k = rest.findIndex(i => !prev.includes(i.brand));
+    if (k < 0) k = 0;
+    out.push(rest.splice(k, 1)[0]);
+  }
+  return out;
+}
+
+function reasonFor(it, saved) {
+  const same = saved.find(s => s.cat === it.cat && s.id !== it.id);
+  const opts = [
+    same && `like your saved ${same.name}`,
+    it.vintage && `${it.decade}, your size`,
+    it.used && !it.vintage && `${Math.round((1 - it.price / it.retail) * 100)}% under retail`,
+    `goes with your ${pick(SAVED_SEED)}`,
+    `${it.color.toLowerCase()} — new for you`
+  ].filter(Boolean);
+  return opts[it.id % opts.length];
+}
+
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const items = Array.from({ length: 90 }, () => makeItem());
+    SAVED_SEED.forEach(n => { const f = items.find(i => i.name === n); if (f) f.saved = true; });
+    this.state = { view: 'feed', items, brand: null, minPrice: 0, maxPrice: PRICE_CAP, saleAll: false,
+      query: '', lastQuery: '', results: [], searchStep: 0, paused: false, scanIdx: 0, lastFind: null };
+  }
+  componentDidMount() { this._sec = this.props.refreshSeconds; this._paused = this.state.paused; this.schedule(); }
+  componentDidUpdate() {
+    if (this._sec !== this.props.refreshSeconds || this._paused !== this.state.paused) {
+      this._sec = this.props.refreshSeconds; this._paused = this.state.paused; this.schedule();
+    }
+  }
+  componentWillUnmount() { clearInterval(this.timer); clearInterval(this.scan); clearInterval(this.sTimer); }
+  schedule() {
+    clearInterval(this.timer); clearInterval(this.scan);
+    const sec = this.props.refreshSeconds ?? 6;
+    if (sec <= 0 || this.state.paused) return;
+    const age = list => list.map(i => i.isNew && Date.now() - i.born > 12000 ? { ...i, isNew: false } : i);
+    this.timer = setInterval(() => {
+      const fresh = Array.from({ length: 1 + Math.floor(rnd() * 2) }, () => makeItem({ isNew: true, sale: false }));
+      this.setState(s => ({ items: [...fresh, ...age(s.items)].slice(0, 180) }));
+    }, sec * 1000);
+    this.scan = setInterval(() => this.setState(s => {
+      const idx = (s.scanIdx + 1) % SCAN.length;
+      const src = SCAN[idx];
+      if (rnd() > .3) return { scanIdx: idx };
+      let opts = { isNew: true, sale: true };
+      if (MARKETS.includes(src)) opts = { ...opts, used: true, source: src };
+      else if (src.endsWith('.com')) opts.brand = src.slice(0, -4);
+      const it = makeItem(opts);
+      if (!it.sale) return { scanIdx: idx };
+      return { scanIdx: idx, items: [it, ...age(s.items)].slice(0, 180), lastFind: `${it.brand} ${it.name}, −${it.sale.pct}% at ${it.sale.store === 'Price drop' ? it.source : it.sale.store}` };
+    }), 1400);
+  }
+  runSearch(q) {
+    const under = (q.match(/under\s*\$?(\d+)/i) || [])[1];
+    const words = q.toLowerCase().split(/\s+/).filter(t => t && !/^(under|\$?\d+|vintage|on|sale)$/.test(t));
+    const wantVintage = /vintage/i.test(q), wantSale = /sale/i.test(q);
+    const hay = i => `${i.name} ${i.cat} ${i.color} ${i.brand} ${i.source}`.toLowerCase();
+    let res = this.state.items.filter(i => words.some(w => hay(i).includes(w)));
+    const brandHit = ALL_BRANDS.find(b => words.some(w => w.length > 2 && b.toLowerCase().includes(w)));
+    const nameHit = (() => { for (const b of ALL_BRANDS) for (const c of BRAND_INFO[b].cats) { const ns = (BRAND_INFO[b].names && BRAND_INFO[b].names[c]) || CATS[c].names; const n = ns.find(n => words.length && words.every(w => n.toLowerCase().includes(w) || b.toLowerCase().includes(w))); if (n) return { b, c, n }; } return null; })();
+    const catHit = Object.keys(CATS).find(k => words.some(w => k.toLowerCase().startsWith(w) || CATS[k].names.some(n => n.toLowerCase().includes(w))));
+    const extra = Array.from({ length: 18 }, () => makeItem({
+      brand: nameHit ? nameHit.b : brandHit || (wantVintage ? pick(VINTAGE) : undefined),
+      cat: nameHit ? nameHit.c : catHit, name: nameHit && nameHit.n, used: wantVintage || undefined, sale: wantSale || undefined }));
+    res = [...res, ...extra];
+    if (wantVintage) res = res.filter(i => i.used);
+    if (wantSale) res = res.filter(i => i.sale);
+    if (under) res = res.filter(i => i.price <= +under);
+    clearInterval(this.sTimer);
+    this.setState({ view: 'search', lastQuery: q, results: res, searchStep: 0 });
+    this.sTimer = setInterval(() => this.setState(s => {
+      if (s.searchStep >= SCAN.length) { clearInterval(this.sTimer); return null; }
+      return { searchStep: Math.min(SCAN.length, s.searchStep + 2) };
+    }), 90);
+  }
+  buildLooks(all, saved, n) {
+    const pool = all.filter(i => !i.isNew);
+    const bySlot = sl => pool.filter(i => i.slot === sl);
+    const outer = bySlot('outer'), top = bySlot('top'), bottom = bySlot('bottom'), extra = bySlot('extra');
+    return Array.from({ length: n }, (_, k) => {
+      const anchor = saved[k % Math.max(saved.length, 1)];
+      const pieces = [outer[(k * 3) % outer.length], top[(k * 5 + 1) % top.length], bottom[(k * 2 + 3) % bottom.length], extra[(k * 7) % extra.length]].filter(Boolean);
+      const total = pieces.reduce((a, i) => a + i.price, 0);
+      return { title: LOOK_TITLES[k % LOOK_TITLES.length], pieces,
+        reason: anchor ? `built around your ${anchor.name}` : 'from what you save', total: `$${total} together` };
+    });
+  }
+  renderVals() {
+    const s = this.state, P = this.props;
+    const set = o => this.setState(o);
+    const all = s.items;
+    const saved = [...all, ...s.results].filter(i => i.saved);
+    const searching = s.view === 'search' && s.searchStep < SCAN.length;
+    const inRange = i => i.price >= s.minPrice && (s.maxPrice >= PRICE_CAP || i.price <= s.maxPrice);
+    const byBrand = i => !s.brand || i.brand === s.brand;
+    const toggleSave = id => this.setState(st => ({
+      items: st.items.map(i => i.id === id ? { ...i, saved: !i.saved } : i),
+      results: st.results.map(i => i.id === id ? { ...i, saved: !i.saved } : i)
+    }));
+    const mixReasons = P.showReasons ?? true;
+    const decorate = i => {
+      const reason = (s.view === 'inspo' || (mixReasons && s.view === 'feed' && i.pickd && !i.sale)) ? reasonFor(i, saved) : null;
+      const c = CATS[i.cat];
+      return {
+        ...i, price: '$' + i.price, was: i.sale ? '$' + i.sale.was : '', pct: i.sale ? i.sale.pct : 0,
+        store: i.sale ? (i.sale.store === 'Price drop' ? i.source : i.sale.store) : '',
+        brandCaps: (i.vintage ? 'Vintage ' : '') + i.brand,
+        usedTag: i.vintage ? (i.decade + ' · ' + i.source) : ('Used · ' + i.source),
+        meta: i.isFrag ? '100 ml' : i.used ? `${i.size} · ${i.cond}` : i.color,
+        tooltip: `${i.brand} ${i.name} — $${i.price}`,
+        reason, hasReason: !!reason, w: c.w, ar: c.ar, isBottle: i.isFrag,
+        savedMark: i.saved ? '♥' : '',
+        heartFill: i.saved ? 'currentColor' : 'none',
+        heartColor: i.saved ? 'var(--color-accent)' : 'var(--color-neutral-600)',
+        onSave: () => toggleSave(i.id)
+      };
+    };
+    const saleSrc = (s.view === 'search' ? (searching ? [] : s.results) : all).filter(i => i.sale && byBrand(i));
+    const saleSorted = saleSrc.slice().sort((a, b) => (b.isNew - a.isNew) || (b.sale.pct - a.sale.pct));
+    const saleShown = mix(saleSorted).slice(0, s.saleAll ? 72 : 12).map(decorate);
+    let base;
+    if (s.view === 'search') base = searching ? [] : s.results.filter(i => !i.sale);
+    else if (s.view === 'saved') base = saved;
+    else if (s.view === 'inspo') base = mix(all.filter(i => !i.saved && !i.isFrag && i.cat !== 'Underwear' && (i.pickd || i.vintage))).slice(0, 36);
+    else base = all.filter(i => !i.sale);
+    const gridSrc = base.filter(i => byBrand(i) && inRange(i));
+    const items = (s.view === 'feed' ? mix(gridSrc) : gridSrc).map(decorate);
+    const looks = this.buildLooks(all, saved, s.view === 'inspo' ? 8 : 2).map(l => ({ ...l, pieces: l.pieces.map(decorate) }));
+    const viewDefs = [['feed', 'Feed', ''], ['inspo', 'Inspiration', ''], ['saved', 'Saved', saved.length]];
+    const views = viewDefs.map(([k, label, count]) => ({ label, count, go: () => set({ view: k, brand: k === 'feed' ? s.brand : null }),
+      color: s.view === k ? 'var(--color-accent-800)' : 'var(--color-text)', rule: s.view === k ? 'var(--color-accent)' : 'transparent' }));
+    const groups = [['clothing', 'Clothing', 'from each brand’s shop, plus Nordstrom, Macy’s and Bloomingdale’s'], ['vintage', 'Vintage', 'Depop and eBay only'], ['fragrance', 'Fragrance', 'colognes, plus Margiela Replica'], ['essentials', 'Essentials', 'restocked when on sale']];
+    const brandGroups = groups.map(([g, label, note]) => ({ label, note,
+      brands: ALL_BRANDS.filter(b => BRAND_INFO[b].group === g || (g === 'fragrance' && b === 'Maison Margiela')).map(b => ({
+        name: b, count: all.filter(i => i.brand === b).length,
+        note: g === 'fragrance' && b === 'Maison Margiela' ? 'Replica fragrances' : BRAND_INFO[b].note,
+        open: () => set({ view: 'feed', brand: b }) })) }));
+    const pct = v => (v / PRICE_CAP * 100) + '%';
+    const live = (P.refreshSeconds ?? 6) > 0 && !s.paused;
+    const v = s.view;
+    return {
+      views, goSettings: () => set({ view: 'settings' }), goInspo: () => set({ view: 'inspo' }),
+      settingsColor: v === 'settings' ? 'var(--color-accent-800)' : 'var(--color-text)',
+      scanLabel: live ? `Watching ${SCAN.length} sources for sales — checking ${SCAN[s.scanIdx]}` : 'Sale watch paused',
+      scanFound: s.lastFind ? 'Last find: ' + s.lastFind : 'Nordstrom, Macy’s and Bloomingdale’s checked first',
+      liveOpts: [{ label: 'Live', on: !s.paused, pick: () => set({ paused: false }) }, { label: 'Paused', on: s.paused, pick: () => set({ paused: true }) }],
+      storeRows: [...STORES.map(n => ({ name: n, note: 'checked every pass' })), { name: 'Brand sites', note: `${SCAN.length - 5} shops` }, { name: 'Depop, eBay', note: 'price drops' }],
+      query: s.query, hasQuery: !!s.query,
+      onQuery: e => set({ query: e.target.value }),
+      onSearch: e => { e.preventDefault(); if (s.query.trim()) this.runSearch(s.query.trim()); },
+      clearSearch: () => set({ query: '', view: 'feed' }),
+      isSearch: v === 'search', lastQuery: s.lastQuery,
+      searchSummary: searching ? `Searching… ${s.searchStep} of ${SCAN.length} sources` : `${s.results.length} pieces from ${SCAN.length} sources`,
+      hasBrand: !!s.brand && v === 'feed', brandLabel: s.brand, clearBrand: () => set({ brand: null }),
+      showSale: (v === 'feed' || v === 'search') && saleShown.length > 0,
+      saleItems: saleShown, saleCount: `${saleSrc.length} found`,
+      hasMoreSale: saleSrc.length > 12, saleMoreLabel: s.saleAll ? 'Show fewer' : `Show all ${saleSrc.length} markdowns`,
+      toggleSaleAll: () => set({ saleAll: !s.saleAll }),
+      showLooks: (v === 'feed' && !s.brand) || v === 'inspo', looks,
+      looksLabel: v === 'inspo' ? 'Looks' : 'Today’s looks', looksNote: 'outfits put together from what’s on the feed', looksLink: v === 'feed',
+      isSettings: v === 'settings', brandGroups,
+      showGrid: v !== 'settings',
+      gridLabel: { feed: 'Just listed', search: 'Results', inspo: 'Pieces picked for you', saved: 'Saved' }[v],
+      gridCount: `${items.length}`,
+      priceCap: PRICE_CAP, minPrice: s.minPrice, maxPrice: s.maxPrice,
+      minLabel: '$' + s.minPrice, maxLabel: s.maxPrice >= PRICE_CAP ? '$' + PRICE_CAP + '+' : '$' + s.maxPrice,
+      trackLeft: pct(s.minPrice), trackRight: pct(PRICE_CAP - s.maxPrice),
+      onMin: e => set({ minPrice: Math.min(+e.target.value, s.maxPrice - 10) }),
+      onMax: e => set({ maxPrice: Math.max(+e.target.value, s.minPrice + 10) }),
+      isEmpty: items.length === 0 && !searching,
+      emptyLabel: v === 'saved' ? 'Nothing saved yet.' : 'Nothing in this price range.',
+      items
+    };
+  }
+}
+</script>
+</body>
+</html>

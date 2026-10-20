@@ -1,0 +1,44 @@
+# Brands the mall follows. Grows over time from ratings.
+# kind: new = brand site / retailers; vintage = Depop, eBay and other resale only
+# site: brand's own store; shopify: true when /products.json works (verify in phase 1)
+
+clothing:
+  - { name: Buck Mason,            kind: new,  site: https://www.buckmason.com }
+  - { name: Ralph Lauren,          kind: new,  site: https://www.ralphlauren.com }
+  - { name: Nudie Jeans,           kind: new,  site: https://www.nudiejeans.com }
+  - { name: Carhartt,              kind: new,  site: https://www.carhartt.com }
+  - { name: Basketcase Gallery,    kind: new,  site: https://basketcasegallery.com }
+  - { name: Los Angeles Apparel,   kind: new,  site: https://losangelesapparel.net }
+  - { name: Maison Margiela,       kind: new,  site: https://www.maisonmargiela.com }
+  - { name: Acne Studios,          kind: new,  site: https://www.acnestudios.com }
+  - { name: Stone Island,          kind: new,  site: https://www.stoneisland.com }
+  - { name: rag & bone,            kind: new,  site: https://www.rag-bone.com }
+  - { name: Theory,                kind: new,  site: https://www.theory.com }
+  - { name: Lululemon,             kind: new,  site: https://shop.lululemon.com }
+  - { name: Banana Republic,       kind: new,  site: https://bananarepublic.gap.com }
+  - { name: Merz b. Schwanen,      kind: new,  site: https://www.merz-schwanen.com }
+  - { name: Arc'teryx,             kind: new,  site: https://arcteryx.com }
+  - { name: Alo,                   kind: new,  site: https://www.aloyoga.com }
+
+vintage:
+  - { name: Patagonia,        kind: vintage, note: 90s fleece and outdoor }
+  - { name: Woolrich,         kind: vintage }
+  - { name: Russell Athletic, kind: vintage, note: sweats }
+  - { name: Gap,              kind: vintage, note: 90s }
+  - { name: Brooks Brothers,  kind: vintage, note: oxfords, Ivy }
+
+fragrance:
+  - { name: Jo Malone,                  kind: new, site: https://www.jomalone.com }
+  - { name: Jean Paul Gaultier,         kind: new, site: https://www.jeanpaulgaultier.com }
+  - { name: Maison Margiela Replica,    kind: new, site: https://www.maisonmargiela-fragrances.us }
+
+essentials:
+  - { name: Calvin Klein, kind: new, note: underwear, site: https://www.calvinklein.us }
+
+retailers:
+  phase_4: [SSENSE, Yoox, Farfetch, Nordstrom, Macy's, Bloomingdale's]
+
+resale_sources:
+  phase_1: [eBay]
+  phase_2: [Depop, Grailed, Vinted, Poshmark, Mercari, TheRealReal, Vestiaire]
+  skipped: [Facebook Marketplace]
