@@ -1,5 +1,5 @@
 import { cutouts, db, listings, orm, ratings, saves, type Category, type Verdict } from "@mall/db";
-import { displayName, pctOff } from "./format.ts";
+import { displayName, formatSize, pctOff } from "./format.ts";
 
 export type Tile = {
   id: number;
@@ -52,7 +52,7 @@ export function toTile({ l, saved, verdict, hasCutout }: Row): Tile {
   const a = l.attributes;
   const color = a.colors?.[0];
   const meta = l.isUsed
-    ? [a.matchedSize, l.condition ? CONDITION_LABEL[l.condition] : null].filter(Boolean).join(" · ") || null
+    ? [a.matchedSize ? formatSize(a.matchedSize) : null, l.condition ? CONDITION_LABEL[l.condition] : null].filter(Boolean).join(" · ") || null
     : l.department === "fragrance"
       ? a.volumeMl
         ? `${a.volumeMl} ml`

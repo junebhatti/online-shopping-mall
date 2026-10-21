@@ -16,3 +16,6 @@ export function timeAgo(date: Date): string {
   if (hours < 24) return `${hours} h ago`;
   return `${Math.round(hours / 24)} d ago`;
 }
+
+/** Letter sizes read as sizes ("m" -> "M"); numeric and longer labels are left as the store wrote them. */
+export const formatSize = (size: string) => (/^[a-z]{1,4}$/i.test(size.trim()) ? size.trim().toUpperCase() : size);

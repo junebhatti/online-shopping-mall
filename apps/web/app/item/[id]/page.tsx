@@ -5,7 +5,7 @@ import { PriceChart } from "@/components/PriceChart";
 import { SectionHead, TILE_GRID } from "@/components/SectionHead";
 import { Tile } from "@/components/Tile";
 import { isOwner } from "@/lib/auth";
-import { usd } from "@/lib/format";
+import { formatSize, usd } from "@/lib/format";
 import { listingDetail } from "@/lib/queries";
 
 const fmtDate = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
@@ -19,8 +19,8 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
   const a = l.attributes;
   const m = a.measurements ?? {};
   const facts = [
-    a.matchedSize ? ["Your size", a.matchedSize] : null,
-    ["Condition", l.isUsed ? (l.condition ?? "used") : "new"],
+    a.matchedSize ? ["Your size", formatSize(a.matchedSize)] : null,
+    ["Condition", l.isUsed ? (l.condition ?? "used").replace("_", " ") : "new"],
     m.chestIn ? ["Chest", `${m.chestIn}"`] : null,
     m.lengthIn ? ["Length", `${m.lengthIn}"`] : null,
     m.waistIn ? ["Waist", `${m.waistIn}"`] : null,
