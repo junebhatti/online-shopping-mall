@@ -1,4 +1,4 @@
-import { cutouts, db, listings, orm, pricePoints, saves, watches } from "@mall/db";
+import { cutouts, db, listings, orm, pricePoints, saves, sourceRuns, watches } from "@mall/db";
 
 const DAY = 24 * 3_600_000;
 
@@ -20,8 +20,11 @@ export type DigestItem = {
   url: string;
 };
 
+export type Problem = { source: string; failing: number; example: string };
+
 export type Digest = {
   subject: string;
+  problems: Problem[];
   html: string;
   text: string;
   drops: DigestItem[];
@@ -93,15 +96,37 @@ export async function buildDigest(siteUrl: string | undefined, now = new Date())
     .limit(20);
   const fresh = freshRows.map(({ l, hasCutout }) => item(l, hasCutout, l.retailCents ?? undefined));
 
-  const empty = drops.length + gone.length + fresh.length === 0 && !watched.some((w) => w.best);
-  const subject = drops.length
-    ? `${drops.length} price ${drops.length === 1 ? "drop" : "drops"} on saved pieces, ${fresh.length} new in the feed`
-    : `${fresh.length} new in the feed`;
+  const problems = await currentProblems(since);
+  // A day with problems still sends, so a broken pipeline can't pass for a quiet day.
+  const empty = drops.length + gone.length + fresh.length === 0 && !watched.some((w) => w.best) && problems.length === 0;
+  const lead = problems.length ? `${problems.length} ${problems.length === 1 ? "source needs" : "sources need"} attention · ` : "";
+  const subject =
+    lead +
+    (drops.length
+      ? `${drops.length} price ${drops.length === 1 ? "drop" : "drops"} on saved pieces, ${fresh.length} new in the feed`
+      : `${fresh.length} new in the feed`);
 
-  return { subject, html: renderHtml({ drops, gone, watched, fresh }, siteUrl), text: renderText({ drops, gone, watched, fresh }), drops, gone, watched, fresh, empty };
+  const parts = { problems, drops, gone, watched, fresh };
+  return { subject, html: renderHtml(parts, siteUrl), text: renderText(parts), ...parts, empty };
 }
 
-type Parts = Pick<Digest, "drops" | "gone" | "watched" | "fresh">;
+/** Sources and steps whose latest run per target failed within the last day. */
+async function currentProblems(since: Date): Promise<Problem[]> {
+  const latest = await db()
+    .selectDistinctOn([sourceRuns.source, sourceRuns.target])
+    .from(sourceRuns)
+    .orderBy(sourceRuns.source, sourceRuns.target, orm.desc(sourceRuns.id));
+  const bySource = new Map<string, Problem>();
+  for (const r of latest) {
+    if (r.status !== "error" || !r.finishedAt || r.finishedAt < since || r.source === "digest") continue;
+    const p = bySource.get(r.source) ?? { source: r.source, failing: 0, example: r.error ?? "unknown error" };
+    p.failing++;
+    bySource.set(r.source, p);
+  }
+  return [...bySource.values()];
+}
+
+type Parts = Pick<Digest, "problems" | "drops" | "gone" | "watched" | "fresh">;
 
 const INK = "#201f1d";
 const MUTED = "#605d5d";
@@ -132,6 +157,12 @@ function grid(items: DigestItem[]): string {
 
 function renderHtml(p: Parts, siteUrl: string | undefined): string {
   const blocks: string[] = [];
+  if (p.problems.length) {
+    const rows = p.problems
+      .map((x) => `<tr><td style="font:13px ${BODY};padding:6px 0;border-bottom:1px solid #dcdada">${esc(x.source)} <span style="color:${MUTED}">(${x.failing} failing)</span><div style="font:11px ${BODY};color:${MUTED}">${esc(x.example.slice(0, 160))}</div></td></tr>`)
+      .join("");
+    blocks.push(section("Needs attention", `<table role="presentation" width="100%" cellspacing="0" cellpadding="0">${rows}</table>`));
+  }
   if (p.drops.length) blocks.push(section("Price drops on saved pieces", grid(p.drops)));
   if (p.gone.length) blocks.push(section("Sold or gone", grid(p.gone)));
   if (p.watched.length) {
@@ -149,6 +180,7 @@ function renderText(p: Parts): string {
   const line = (i: DigestItem) => `- ${i.brand} ${i.name}: ${usd(i.priceCents)}${i.wasCents ? ` (was ${usd(i.wasCents)})` : ""} at ${i.store} ${i.url}`;
   return [
     "Yesterday in the mall",
+    p.problems.length ? `\nNeeds attention\n${p.problems.map((x) => `- ${x.source} (${x.failing} failing): ${x.example.slice(0, 160)}`).join("\n")}` : "",
     p.drops.length ? `\nPrice drops on saved pieces\n${p.drops.map(line).join("\n")}` : "",
     p.gone.length ? `\nSold or gone\n${p.gone.map(line).join("\n")}` : "",
     p.watched.length ? `\nWatching\n${p.watched.map((w) => `- ${w.label}: ${w.best ? `${usd(w.best.priceCents)} at ${w.best.store}` : "not found yet"}`).join("\n")}` : "",
