@@ -52,4 +52,8 @@ export async function fetchJson<T>(
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export const toCents = (value: string | number): number => Math.round(Number(value) * 100);
+export function toCents(value: string | number): number {
+  const n = Number(value);
+  if (!Number.isFinite(n)) throw new Error(`Unparseable price: ${JSON.stringify(value)}`);
+  return Math.round(n * 100);
+}

@@ -15,10 +15,17 @@ export async function ingestResaleSearch<T>(
 ): Promise<void> {
   const q = loadQueries();
   const maxPrice = Math.max(...Object.values(loadRules().price_ceilings_usd));
+  let rawTotal = 0;
   for (const query of [...q.clothing, ...q.shoes]) {
     await withRun(source, query, async (counts) => {
-      const mapped = (await search(query, maxPrice)).map(map).filter((l): l is NormalizedListing => l !== null);
-      counts.fetched = mapped.length;
+      const raw = await search(query, maxPrice);
+      counts.fetched = raw.length;
+      rawTotal += raw.length;
+      const mapped = raw.map(map).filter((l): l is NormalizedListing => l !== null);
+      // Results that all fail mapping (wrong currency, changed shape) are a broken source, not an empty one.
+      if (raw.length > 0 && mapped.length === 0) {
+        throw new Error(`${raw.length} results but none could be mapped (currency or response shape changed?)`);
+      }
       const ids = mapped.map((l) => l.externalId);
       const known = new Set(
         ids.length
@@ -37,4 +44,5 @@ export async function ingestResaleSearch<T>(
     });
     await sleep(1000);
   }
+  if (rawTotal === 0) throw new Error(`every ${source} search returned nothing this cycle; the source is likely broken`);
 }

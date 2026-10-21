@@ -50,11 +50,12 @@ export async function fetchShopifyProducts(site: string): Promise<ShopifyProduct
   for (let page = 1; page <= MAX_PAGES; page++) {
     const url = `${site.replace(/\/$/, "")}/products.json?limit=250&page=${page}`;
     const { products } = await fetchJson(url, pageSchema);
-    if (products.length === 0) break;
+    if (products.length === 0) return all;
     all.push(...products);
     await sleep(800);
   }
-  return all;
+  // A truncated catalog would mark the rest as removed, so refuse instead.
+  throw new Error(`${site} has more than ${MAX_PAGES * 250} products; raise MAX_PAGES`);
 }
 
 export function mapShopifyProduct(p: ShopifyProduct, target: ShopifyTarget): NormalizedListing | null {

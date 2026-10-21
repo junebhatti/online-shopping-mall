@@ -16,7 +16,15 @@ export {
 } from "./ebay.ts";
 export { fetchBoardPins, type Pin } from "./pinterest.ts";
 export { sizedImageUrl } from "./images.ts";
-export { getGrailedDetail, mapGrailed, searchGrailed, type GrailedDetail, type GrailedHit } from "./grailed.ts";
+export {
+  getGrailedDetail,
+  grailedListingStatus,
+  mapGrailed,
+  searchGrailed,
+  type GrailedConfig,
+  type GrailedDetail,
+  type GrailedHit,
+} from "./grailed.ts";
 export { fetchYooxBrand, mapYoox, resolveYooxBrand, type YooxConfig, type YooxHit } from "./yoox.ts";
-export { mapPoshmark, searchPoshmark, type PoshmarkPost } from "./poshmark.ts";
+export { mapPoshmark, poshmarkListingStatus, searchPoshmark, type PoshmarkPost } from "./poshmark.ts";
 export { mapVinted, searchVinted, type VintedItem } from "./vinted.ts";

@@ -11,6 +11,8 @@ export async function ingestShopify(): Promise<void> {
     await withRun("shopify", b.name, async (counts) => {
       const products = await fetchShopifyProducts(b.site!);
       counts.fetched = products.length;
+      // An empty catalog is a broken or blocked store, not a sold-out one: don't remove everything.
+      if (products.length === 0) throw new Error(`${b.name} returned no products; nothing was marked removed`);
       for (const p of products) {
         const listing = mapShopifyProduct(p, {
           brand: b.name,

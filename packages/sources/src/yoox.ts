@@ -64,6 +64,9 @@ export async function fetchYooxBrand(c: YooxConfig, brandFacet: string): Promise
       }),
     },
   );
+  if (res.nbHits > res.hits.length) {
+    throw new Error(`Yoox ${brandFacet}: ${res.nbHits} hits but only ${res.hits.length} returned; add paging before trusting removals`);
+  }
   return res.hits;
 }
 

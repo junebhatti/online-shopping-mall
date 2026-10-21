@@ -43,6 +43,25 @@ export async function searchPoshmark(query: string): Promise<PoshmarkPost[]> {
   return res.data.filter((p) => (p.inventory?.status ?? "available") === "available");
 }
 
+/**
+ * Is one listing still for sale? Only the status is validated; detail differs from search in other
+ * fields. A taken-down post comes back as HTTP 200 wrapping {error: {errorType: "PostRemovedError"}}.
+ */
+export async function poshmarkListingStatus(id: string): Promise<"active" | "sold" | "removed"> {
+  const res = await fetchJson(
+    `https://poshmark.com/vm-rest/posts/${encodeURIComponent(id)}`,
+    z.union([
+      z.object({ inventory: z.object({ status: z.string() }) }),
+      z.object({ error: z.object({ errorType: z.string(), statusCode: z.number().optional() }) }),
+    ]),
+  );
+  if ("error" in res) {
+    if (res.error.errorType === "PostRemovedError" || res.error.statusCode === 404) return "removed";
+    throw new Error(`Poshmark post ${id}: ${res.error.errorType}`);
+  }
+  return res.inventory.status === "available" ? "active" : "sold";
+}
+
 const CONDITION: Record<string, Condition> = { nwt: "new", ret: "new", uln: "like_new", ug: "good", uf: "fair" };
 
 export function mapPoshmark(p: PoshmarkPost): NormalizedListing | null {

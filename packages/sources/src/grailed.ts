@@ -1,12 +1,12 @@
 import { z } from "zod";
 import type { Condition } from "@mall/db";
 import { categorize } from "./categorize.ts";
-import { HttpError, fetchJson, BROWSER_UA, toCents } from "./http.ts";
+import { HttpError, fetchJson, toCents } from "./http.ts";
 import type { NormalizedListing } from "./types.ts";
 
-// Grailed search runs on Algolia with a public search-only key embedded in grailed.com/shop.
-// Newest-first index suits a 2-hourly ingest. Detail (measurements, all photos) is a public JSON endpoint.
-const INDEX = "Listing_by_date_added_production";
+// Grailed search runs on Algolia with a public, search-only key (config/sources.yaml). Detail
+// (measurements, all photos) is Grailed's own JSON endpoint, which can block by IP.
+export type GrailedConfig = { app_id: string; search_key: string; index: string; live_index: string };
 
 const hitSchema = z.object({
   id: z.number(),
@@ -41,50 +41,42 @@ const detailSchema = z.object({
 
 export type GrailedDetail = z.infer<typeof detailSchema>["data"];
 
-type Keys = { appId: string; searchKey: string };
-let keys: Keys | undefined;
+const algolia = (c: GrailedConfig) => ({
+  base: `https://${c.app_id.toLowerCase()}-dsn.algolia.net/1/indexes`,
+  headers: { "x-algolia-application-id": c.app_id, "x-algolia-api-key": c.search_key, "content-type": "application/json" },
+});
 
-/** Read the public Algolia app id and search key from grailed.com/shop. Called again if a key is rejected. */
-async function loadKeys(): Promise<Keys> {
-  const res = await fetch("https://www.grailed.com/shop", {
-    headers: { "user-agent": BROWSER_UA, accept: "text/html" },
-    signal: AbortSignal.timeout(20_000),
+export async function searchGrailed(c: GrailedConfig, query: string, maxPriceUsd: number): Promise<GrailedHit[]> {
+  const a = algolia(c);
+  const res = await fetchJson(`${a.base}/${c.index}/query`, searchSchema, {
+    method: "POST",
+    headers: a.headers,
+    body: JSON.stringify({
+      query,
+      hitsPerPage: 50,
+      page: 0,
+      filters: 'department:menswear AND location:"United States"',
+      numericFilters: [`price_i<=${maxPriceUsd}`],
+      attributesToHighlight: [],
+    }),
   });
-  if (!res.ok) throw new HttpError("https://www.grailed.com/shop", res.status, "");
-  const html = await res.text();
-  const appId = html.match(/"appId":"([A-Z0-9]+)"/)?.[1];
-  const searchKey = html.match(/"publicSearchKey":"([a-f0-9]+)"/)?.[1];
-  if (!appId || !searchKey) throw new Error("Grailed Algolia keys not found in grailed.com/shop; the page layout changed");
-  keys = { appId, searchKey };
-  return keys;
+  return res.hits.filter((h) => !h.sold);
 }
 
-export async function searchGrailed(query: string, maxPriceUsd: number): Promise<GrailedHit[]> {
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const k = keys ?? (await loadKeys());
-    try {
-      const res = await fetchJson(`https://${k.appId.toLowerCase()}-dsn.algolia.net/1/indexes/${INDEX}/query`, searchSchema, {
-        method: "POST",
-        headers: { "x-algolia-application-id": k.appId, "x-algolia-api-key": k.searchKey, "content-type": "application/json" },
-        body: JSON.stringify({
-          query,
-          hitsPerPage: 50,
-          page: 0,
-          filters: 'department:menswear AND location:"United States"',
-          numericFilters: [`price_i<=${maxPriceUsd}`],
-          attributesToHighlight: [],
-        }),
-      });
-      return res.hits.filter((h) => !h.sold);
-    } catch (err) {
-      if (attempt === 0 && err instanceof HttpError && (err.status === 403 || err.status === 401)) {
-        keys = undefined; // key rotated
-        continue;
-      }
-      throw err;
-    }
+/** Still for sale? Looks the listing up in the live index; not found there means sold or taken down. */
+export async function grailedListingStatus(c: GrailedConfig, id: string): Promise<"active" | "sold" | "removed"> {
+  const a = algolia(c);
+  try {
+    const res = await fetchJson(
+      `${a.base}/${c.live_index}/${encodeURIComponent(id)}?attributesToRetrieve=sold`,
+      z.object({ sold: z.boolean().optional() }),
+      { headers: a.headers },
+    );
+    return res.sold ? "sold" : "active";
+  } catch (err) {
+    if (err instanceof HttpError && err.status === 404) return "removed";
+    throw err;
   }
-  throw new Error("unreachable");
 }
 
 export async function getGrailedDetail(id: number): Promise<GrailedDetail> {

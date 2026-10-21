@@ -1,5 +1,14 @@
 # Retailer search endpoints that need public configuration.
 
+# Grailed's shop page embeds its public, search-only Algolia key ("publicSearchKey" in the page config at
+# https://www.grailed.com/shop). That page and Grailed's own API now block this Mac, but Algolia itself
+# doesn't. If searches return 403, read the current key from the shop page in a browser and update it.
+grailed:
+  app_id: MNRWEFSS2Q
+  search_key: c89dbaddf15fe70e1941a109bf7c2a3d
+  index: Listing_by_date_added_production
+  live_index: Listing_production
+
 # Yoox's storefront searches through Algolia with a public, search-only key that its web app
 # ships to every browser (found in __NEXT_DATA__ at props.pageProps.initialState.applicationInfo.algolia
 # on https://www.yoox.com/us/men/sale/shoponline). If searches start returning 403, open that page in a

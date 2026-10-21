@@ -144,6 +144,7 @@ const watchesSchema = z.array(
 export const loadWatches = () => loadYaml("config/watches.yaml", watchesSchema);
 
 const sourcesSchema = z.object({
+  grailed: z.object({ app_id: z.string(), search_key: z.string(), index: z.string(), live_index: z.string() }),
   yoox: z.object({ app_id: z.string(), search_key: z.string(), index: z.string(), department: z.string() }),
 });
 

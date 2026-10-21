@@ -43,7 +43,10 @@ export async function ingestEbay(): Promise<void> {
   }
 
   let detailBudget = MAX_DETAIL_CALLS_PER_CYCLE;
-  for (const s of searches) {
+  // Start somewhere different each 2-hour cycle so a used-up budget doesn't always skip the same tail.
+  const offset = Math.floor(Date.now() / 7_200_000) % searches.length;
+  const ordered = [...searches.slice(offset), ...searches.slice(0, offset)];
+  for (const [i, s] of ordered.entries()) {
     await withRun("ebay", s.query, async (counts) => {
       const results = await searchEbay(creds, { query: s.query, categoryId: s.categoryId, maxPriceUsd: maxPrice });
       counts.fetched = results.length;
@@ -61,7 +64,7 @@ export async function ingestEbay(): Promise<void> {
       }
     });
     if (detailBudget <= 0) {
-      log.warn("eBay detail budget used up for this cycle; remaining searches wait for the next one");
+      log.warn(`eBay detail budget used up; ${ordered.length - i - 1} searches wait for the next cycle (order rotates)`);
       break;
     }
   }
