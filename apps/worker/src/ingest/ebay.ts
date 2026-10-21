@@ -80,7 +80,7 @@ async function knownIds(ids: string[]): Promise<Set<string>> {
   return new Set(rows.map((r) => r.id));
 }
 
-/** Saved eBay items are re-checked every cycle so drops and sell-outs reach the digest. */
+/** Saved eBay items are re-checked every cycle so price drops reach the sale alerts. */
 export async function refreshSavedEbay(creds: EbayCredentials): Promise<void> {
   const saved = await db()
     .select({ id: listings.id, externalId: listings.externalId, department: listings.department })

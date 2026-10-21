@@ -19,8 +19,7 @@ DATABASE_URL="<neon connection string>" npm run db:migrate
 2. Add a volume mounted at `/app/.cache` so the two image models (about 600 MB) download once.
 3. Give the service at least 2 GB of RAM; CLIP and BiRefNet load together during a cycle.
 4. Variables: `DATABASE_URL`, `EBAY_CLIENT_ID`, `EBAY_CLIENT_SECRET`, `ANTHROPIC_API_KEY`,
-   `RESEND_API_KEY`, `DIGEST_TO`, `SITE_URL` (the Vercel URL), `TZ=America/New_York`
-   (so the digest goes out after 8am your time), optionally `DIGEST_HOUR`.
+   `RESEND_API_KEY`, `ALERT_TO` (where sale alerts go), `SITE_URL` (the Vercel URL).
 5. The container runs migrations, then the worker loop, which checks every 10 minutes for due jobs.
 
 ## 3. Site: Vercel
@@ -34,4 +33,4 @@ DATABASE_URL="<neon connection string>" npm run db:migrate
 ## Costs to expect
 
 Neon free, Vercel hobby free, Railway roughly $5–10 a month for a small always-on worker, Claude Haiku judging
-about $1–2 a month, Resend free for 100 emails a day.
+about $1–2 a month, Resend free (alerts only send when a saved piece drops).

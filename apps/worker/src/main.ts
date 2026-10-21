@@ -1,4 +1,4 @@
-import { runDigest } from "./digest/run-digest.ts";
+import { runAlerts } from "./alerts/run-alerts.ts";
 import { runCutouts } from "./images/run-cutouts.ts";
 import { ingestEbay } from "./ingest/ebay.ts";
 import { ingestGrailed } from "./ingest/grailed.ts";
@@ -68,8 +68,8 @@ async function cycle(force: boolean): Promise<void> {
       if ((await runJob(job.name, job.run)) === "error") processingFailed = true;
     }
   }
-  // The digest decides for itself whether it's due (once a day, after DIGEST_HOUR).
-  if (!only || only.includes("digest")) await runJob("digest", () => runDigest(Boolean(only?.includes("digest"))));
+  // Sale alerts are checked every tick; they only email when a saved piece or watch just dropped.
+  if (!only || only.includes("alerts")) await runJob("alerts", runAlerts);
 }
 
 async function gatePending(): Promise<boolean> {

@@ -9,7 +9,7 @@ COPY apps/worker/package.json apps/worker/
 COPY apps/web/package.json apps/web/
 COPY packages/config/package.json packages/config/
 COPY packages/db/package.json packages/db/
-COPY packages/digest/package.json packages/digest/
+COPY packages/alerts/package.json packages/alerts/
 COPY packages/sources/package.json packages/sources/
 RUN npm ci --workspace @mall/worker --include-workspace-root
 

@@ -8,7 +8,7 @@ The design is in `docs/design-handoff/HANDOFF.md` (v4) and is built as designed 
 A single-owner shopping site that pools new stock from brands Junaid likes, plus vintage and
 resale listings, into one curated feed. Agents refresh listings every 2 hours, score each
 item against a taste model built from Pinterest and in-app ratings, admit only ~20 items a
-day, watch saved items for any price drop, and send one daily digest email.
+day, and watch saved items, emailing only when one goes meaningfully on sale.
 
 Anyone can view the site. Only the owner (password) can rate, save, or change settings.
 No site name yet; header leaves room for a wordmark.
@@ -64,7 +64,9 @@ Rules:
 - Price history per listing; same-item matching across brand sites and retailers;
   resale-vs-retail gap flagged on used listings.
 - Alert on **any** price drop of a saved item.
-- One **daily digest email**: drops on saved items, new admitted items, notable resale gaps.
+- **Sale alerts only** (changed 2026-10-21; no daily digest): one email when a saved piece drops 15%+ below its
+  price when saved, or a watch's best match is marked down 15%+ (`alerts.min_drop_pct` in config/rules.yaml).
+  One email per drop; a further drop sends another.
 - Keep sold/expired listings (hidden) for price history.
 
 ### Design and UX
@@ -80,7 +82,7 @@ Rules:
 - Next.js + TypeScript + Tailwind on Vercel.
 - Postgres on Neon (or Supabase). Drizzle for schema and migrations.
 - Worker: small always-on Node process on Railway (or Fly) running ingestion, scoring,
-  background removal, price checks, and the digest. Refresh every 2 hours (resale), twice daily (brand sites).
+  background removal, price checks, and sale alerts. Refresh every 2 hours (resale), twice daily (brand sites).
 - Budget: under $25/month total for hosting, proxies (none), and Claude API.
   Use Claude Haiku for batched text classification; open CLIP-style embeddings on the worker; Claude vision only for borderline items.
 - Secrets in `.env.local`, never committed.
@@ -111,7 +113,7 @@ Embeddings are `real[]` columns on listings and pins, compared in the worker.
    - Blocked from this Mac, left out: **Depop**, **Mercari**, **Vestiaire** (Cloudflare blocks every request),
      **The RealReal** (its API only answers when the client works around its bot detection, which we don't do).
 3. **Saves + alerts** — done 2026-10-20: price history chart, cross-store matches, resale-vs-retail gap,
-   watches, daily digest email (sends once `RESEND_API_KEY` and `DIGEST_TO` are set; preview at /digest).
+   watches, sale alert emails (send once `RESEND_API_KEY` and `ALERT_TO` are set; preview at /alerts).
 4. **Luxury + department stores** — partly done:
    - Working: **Yoox** men's sale for every brand it carries (public Algolia search).
    - Blocked: **SSENSE** (Cloudflare challenge), **Farfetch** (Akamai blocks after ~12 requests),
@@ -142,7 +144,7 @@ Consequences for Phase 1 so this does not need a rewrite later:
 
 ## Open items
 - eBay developer account: email confirmation, then keys (in progress with Junaid).
-- Resend account for the digest email (`RESEND_API_KEY`, `DIGEST_TO`).
+- Resend account for sale alerts (`RESEND_API_KEY`, `ALERT_TO`).
 - Deploy: Neon, Vercel, Railway (docs/DEPLOY.md).
 - Confirm the price ceilings marked "guess" in config/rules.yaml.
 - Confirm Claude's read of the Pinterest boards in taste/profile.md.

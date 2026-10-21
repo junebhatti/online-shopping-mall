@@ -159,6 +159,8 @@ export const saves = pgTable(
       .notNull()
       .references(() => listings.id, { onDelete: "cascade" }),
     rebuyIntervalDays: integer("rebuy_interval_days"),
+    /** Price of the last sale alert sent for this save; the next alert needs a lower price. */
+    alertedPriceCents: integer("alerted_price_cents"),
     lastBoughtAt: timestamp("last_bought_at", { withTimezone: true }),
     createdAt: createdAt(),
   },
@@ -173,6 +175,9 @@ export const watches = pgTable("watches", {
   department: text("department").$type<Department>().notNull(),
   maxPriceCents: integer("max_price_cents"),
   bestListingId: integer("best_listing_id").references(() => listings.id, { onDelete: "set null" }),
+  /** Last sale alert sent for this watch: which listing, at what price. */
+  alertedListingId: integer("alerted_listing_id"),
+  alertedPriceCents: integer("alerted_price_cents"),
   active: boolean("active").notNull().default(true),
   createdAt: createdAt(),
 });

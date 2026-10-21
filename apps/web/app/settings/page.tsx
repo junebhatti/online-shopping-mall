@@ -20,7 +20,7 @@ const SOURCE_NAMES: Record<string, string> = {
   ebay: "eBay",
   pinterest: "Pinterest boards",
   judge: "Taste judge (Claude)",
-  digest: "Daily digest email",
+  alerts: "Sale alert email",
   poshmark: "Poshmark",
   vinted: "Vinted",
   recheck: "Resale recheck",
@@ -160,11 +160,17 @@ export default async function SettingsPage() {
           <Row name="Pinterest boards used" note={Object.values(boards).filter((u) => u === "clothing").length + " of " + Object.keys(boards).length} />
           <Row name="Judge model" note={taste.judge.model} />
         </Block>
-        {owner ? (
-          <Block title="Digest">
-            <Link href="/digest" className="btn btn-ghost self-start text-[12px]">Preview today&apos;s email →</Link>
-          </Block>
-        ) : null}
+        <Block title="Sale alerts">
+          <p className="m-0 text-[12px] text-ink-soft">
+            One email when something you saved drops {rules.alerts.min_drop_pct}%+ below its price when saved, or a watch is
+            marked down that much. No daily digest.
+          </p>
+          {owner ? (
+            <Link href="/alerts" className="btn btn-ghost self-start text-[12px]">
+              See what would send now →
+            </Link>
+          ) : null}
+        </Block>
         <Block title="Owner">
           {owner ? (
             <form action={logout}>

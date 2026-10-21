@@ -21,13 +21,15 @@ Read PLAN.md first (the Phases section has per-source status).
 
 - Start: `npm run db:start`, then `npm run dev` (http://localhost:3100) and `npm run worker` for the loop.
   `npm run worker:once -- --only=<jobs>` runs chosen jobs: pinterest, shopify, yoox, ebay, grailed, poshmark,
-  vinted, then watches, gate, embed, score, judge, admit, cutouts, and digest.
+  vinted, then recheck, watches, gate, embed, score, judge, admit, cutouts, and alerts.
 - Sources live: Shopify (LA Apparel, Alo, Pool House), Yoox men's sale, Grailed, Poshmark, Vinted, Pinterest.
   About 1,100 listings past the gate, 60 admitted to the feed (20 a day from here).
 - eBay adapter is built and recorded as failing until keys exist.
 - Claude judge is live (key added 2026-10-20). It judges 30 per cycle, about $0.002 per batch; only verdicts with
   fit >= 7 (`judge.min_fit` in config/taste.yaml) reach the feed. All 58 pieces in the feed passed it.
-- Digest builds daily after 8am and is saved in `.data/digests`; it emails once Resend is configured. Preview at /digest.
+- No daily digest (Junaid's call, 2026-10-21). Sale alerts are checked every cycle and email only when a saved piece
+  drops 15%+ below its price when saved, or a watch is marked down 15%+. Unsent alerts wait (copy in `.data/alerts`)
+  until Resend is configured. Preview at /alerts. Tested with a simulated drop on 2026-10-21, then cleaned up.
 - Owner password: `OWNER_PASSWORD` in `.env.local` (a generated test value).
 - `npm test` (44 tests), `npm run typecheck`, `npm run build` all clean.
 
@@ -38,7 +40,7 @@ Read PLAN.md first (the Phases section has per-source status).
    marketplace account deletion notice. The mall stores listing data only, no eBay user data, so the exemption applies;
    let Junaid confirm the wording. Put `EBAY_CLIENT_ID` / `EBAY_CLIENT_SECRET` in `.env.local`, then
    `npm run worker:once -- --only=ebay,gate,embed,score,admit,cutouts` and check categories 1059 / 93427 and size aspects.
-2. **Resend** for the digest (`RESEND_API_KEY`, `DIGEST_TO`); `onboarding@resend.dev` can send to the signup address.
+2. **Resend** for sale alerts (`RESEND_API_KEY`, `ALERT_TO`); `onboarding@resend.dev` can send to the signup address.
 3. **Deploy** per docs/DEPLOY.md.
 
 ## Next to build
@@ -49,7 +51,7 @@ Read PLAN.md first (the Phases section has per-source status).
   empty or truncated catalog pulls wiping Shopify/Yoox, resale sources fail loudly when empty, feed and saved
   resale pieces re-checked (Grailed via its live index, Poshmark via its post endpoint, Vinted ages out after
   14 days), judge/embed/cutout handling for dead images and partial answers, a Needs-attention section in the
-  digest, stale and partial status on the site, versioned cutout URLs.
+  alerts, stale and partial status on the site, versioned cutout URLs. Secondhand price ceilings (~40% of new).
 - **Grailed blocks this Mac** for its shop page and listing API (403) since the evening of 2026-10-20; Algolia
   search still works with the key in config/sources.yaml. New Grailed pieces are stored without measurements
   while that lasts, and Settings shows it. Railway's IP may not be blocked.

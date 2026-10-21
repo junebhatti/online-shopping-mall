@@ -22,7 +22,7 @@ sources (Shopify stores, Yoox sale, Grailed, Poshmark, Vinted, eBay, Pinterest)
 ```
 
 `apps/worker` runs that loop (resale every 2 hours, brand sites and Yoox twice a day, Pinterest daily) and sends a
-daily digest email. Deploying: [docs/DEPLOY.md](docs/DEPLOY.md).
+sale alert email when something you saved drops 15%+ (no daily digest). Deploying: [docs/DEPLOY.md](docs/DEPLOY.md).
 `apps/web` is the Next.js site. Every source run is recorded, and failures show in Settings.
 
 ## Run it locally

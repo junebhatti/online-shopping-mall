@@ -70,6 +70,7 @@ const rulesSchema = z.object({
   }),
   price_ceilings_usd: z.record(z.string(), z.number()),
   resale_price_ceilings_usd: z.record(z.string(), z.number()),
+  alerts: z.object({ min_drop_pct: z.number().int().min(1).max(90) }),
   admission: z.object({ daily_limit: z.number(), rating_session_size: z.number() }),
   resale: z.object({
     max_shipping_usd: z.number(),

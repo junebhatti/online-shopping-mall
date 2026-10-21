@@ -45,6 +45,11 @@ resale_price_ceilings_usd:
   underwear: 0      # never secondhand
   other: 50
 
+# Sale alerts: the only email the mall sends. A saved piece alerts when it drops this far below its
+# price when you saved it; a watch when its cheapest match is marked down this much (or is under its target).
+alerts:
+  min_drop_pct: 15
+
 admission:
   daily_limit: 20          # new items admitted to the feed per day
   rating_session_size: 30  # items in each daily rating session (week one)

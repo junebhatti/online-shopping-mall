@@ -168,7 +168,7 @@ export type SourceStatus = {
 };
 
 /** Hours between runs per source (apps/worker/src/main.ts); pipeline steps follow the 2-hour resale cycle. */
-const CADENCE_HOURS: Record<string, number> = { pinterest: 24, shopify: 12, yoox: 12, digest: 24 };
+const CADENCE_HOURS: Record<string, number> = { pinterest: 24, shopify: 12, yoox: 12 };
 /** Sources that bring in listings, as opposed to pipeline steps. */
 export const SHOPPING_SOURCES = new Set(["shopify", "yoox", "ebay", "grailed", "poshmark", "vinted"]);
 const JOB_TARGET = "(job)";

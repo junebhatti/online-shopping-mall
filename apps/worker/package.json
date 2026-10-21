@@ -10,9 +10,9 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.135.0",
     "@huggingface/transformers": "^4.3.1",
+    "@mall/alerts": "*",
     "@mall/config": "*",
     "@mall/db": "*",
-    "@mall/digest": "*",
     "@mall/sources": "*",
     "sharp": "^0.35.5",
     "zod": "^4.6.7"
