@@ -13,6 +13,9 @@ Read PLAN.md first (the Phases section has per-source status).
   volume at `/app/.cache`, 2 GB RAM, env vars including `DATABASE_URL` = the Neon URL and `SITE_URL`).
   `worker.Dockerfile` has never been built; watch the first Railway build log.
 - The local worker writes to the local database only, so local and Neon drift apart from here.
+- **Schema changes: migrate Neon before pushing.** Vercel deploys on every push and its queries select every
+  listing column, so a column the code expects but Neon lacks breaks the live site. Use the non-pooled URL:
+  `DATABASE_URL="<NEON_DATABASE_URL with -pooler. replaced by .>" npm run db:migrate`. Migration 0002 is on both.
 
 ## State (2026-10-20, evening)
 
@@ -40,10 +43,10 @@ Read PLAN.md first (the Phases section has per-source status).
 
 ## Next to build
 
-- Brand-list growth from ratings (suggest brands Junaid keeps rating "wear" that aren't in config/brands.yaml).
-- Pick a flat-lay image over an on-model one when a store offers both, before cutting out.
-- Owner login rate limiting.
+- Done 2026-10-20: judge-written names for generic titles, flat-lay hero shots before cutouts, brand suggestions
+  in Settings, login rate limiting.
 - Vinted gives no measurements or shipping in search; consider a detail fetch only if it stays reliable.
+- Rebuy shelf and home-goods discovery (PLAN.md "Beyond clothing") once clothing is settled.
 
 ## Ask Junaid
 
