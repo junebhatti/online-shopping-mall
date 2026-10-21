@@ -41,28 +41,28 @@ export type Digest = {
  */
 export async function buildDigest(siteUrl: string | undefined, now = new Date()): Promise<Digest> {
   const since = new Date(now.getTime() - DAY);
-  const item = (l: typeof listings.$inferSelect, hasCutout: boolean, wasCents?: number): DigestItem => ({
+  const item = (l: typeof listings.$inferSelect, cutoutAt: Date | null, wasCents?: number): DigestItem => ({
     id: l.id,
     brand: l.brand,
     name: l.displayName && (l.source === "yoox" || l.title.trim().split(/\s+/).length <= 2) ? l.displayName : name(l.title),
     store: l.store,
     priceCents: l.priceCents,
     wasCents,
-    image: siteUrl && hasCutout ? `${siteUrl}/img/${l.id}?cut=1` : (l.images[0] ?? null),
+    image: siteUrl && cutoutAt ? `${siteUrl}/img/${l.id}?v=${cutoutAt.getTime()}` : (l.images[l.heroImage ?? 0] ?? l.images[0] ?? null),
     url: siteUrl ? `${siteUrl}/item/${l.id}` : l.url,
   });
-  const withCutout = orm.sql<boolean>`exists (select 1 from ${cutouts} c where c.listing_id = ${listings.id})`;
+  const cutoutAt = orm.sql<Date | null>`(select c.created_at from ${cutouts} c where c.listing_id = ${listings.id})`.mapWith((v: string | Date | null) => (v ? new Date(v) : null));
 
   // Saved items whose newest price point (in the last day) is below the one before it.
   const savedRows = await db()
-    .select({ l: listings, hasCutout: withCutout })
+    .select({ l: listings, cutoutAt })
     .from(saves)
     .innerJoin(listings, orm.eq(saves.listingId, listings.id));
   const drops: DigestItem[] = [];
   const gone: DigestItem[] = [];
-  for (const { l, hasCutout } of savedRows) {
+  for (const { l, cutoutAt } of savedRows) {
     if (l.status !== "active") {
-      if (l.updatedAt >= since) gone.push(item(l, hasCutout));
+      if (l.updatedAt >= since) gone.push(item(l, cutoutAt));
       continue;
     }
     const pts = await db()
@@ -73,28 +73,28 @@ export async function buildDigest(siteUrl: string | undefined, now = new Date())
       .limit(2);
     const [latest, previous] = pts;
     if (latest && previous && latest.seenAt >= since && latest.priceCents < previous.priceCents) {
-      drops.push(item(l, hasCutout, previous.priceCents));
+      drops.push(item(l, cutoutAt, previous.priceCents));
     }
   }
 
   const watchRows = await db()
-    .select({ w: watches, l: listings, hasCutout: withCutout })
+    .select({ w: watches, l: listings, cutoutAt })
     .from(watches)
     .leftJoin(listings, orm.eq(watches.bestListingId, listings.id))
     .where(orm.eq(watches.active, true));
-  const watched = watchRows.map(({ w, l, hasCutout }) => ({
+  const watched = watchRows.map(({ w, l, cutoutAt }) => ({
     label: w.label,
-    best: l ? item(l, Boolean(hasCutout), l.retailCents ?? undefined) : null,
+    best: l ? item(l, cutoutAt, l.retailCents ?? undefined) : null,
     underTarget: Boolean(l && w.maxPriceCents && l.priceCents <= w.maxPriceCents),
   }));
 
   const freshRows = await db()
-    .select({ l: listings, hasCutout: withCutout })
+    .select({ l: listings, cutoutAt })
     .from(listings)
     .where(orm.and(orm.gte(listings.admittedAt, since), orm.eq(listings.status, "active")))
     .orderBy(orm.desc(listings.score))
     .limit(20);
-  const fresh = freshRows.map(({ l, hasCutout }) => item(l, hasCutout, l.retailCents ?? undefined));
+  const fresh = freshRows.map(({ l, cutoutAt }) => item(l, cutoutAt, l.retailCents ?? undefined));
 
   const problems = await currentProblems(since);
   // A day with problems still sends, so a broken pipeline can't pass for a quiet day.

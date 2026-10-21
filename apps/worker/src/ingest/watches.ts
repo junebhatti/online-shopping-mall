@@ -40,7 +40,10 @@ export async function trackWatches(): Promise<void> {
       .toLowerCase()
       .split(/\s+/)
       .filter((x) => x.length > 2 && !STOP.has(x));
-    if (words.length === 0) continue;
+    if (words.length === 0) {
+      log.warn(`watch "${w.label}": its query "${w.query}" has only filler words, so it can't match anything; edit config/watches.yaml`);
+      continue;
+    }
     const [best] = await db()
       .select({ id: listings.id, priceCents: listings.priceCents, store: listings.store })
       .from(listings)

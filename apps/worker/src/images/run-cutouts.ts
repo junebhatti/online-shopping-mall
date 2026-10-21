@@ -14,7 +14,7 @@ const PER_CYCLE = 60;
 export async function runCutouts(): Promise<void> {
   const hasCutout = orm.sql`exists (select 1 from ${cutouts} c where c.listing_id = ${listings.id})`;
   const rows = await db()
-    .select({ id: listings.id, images: listings.images, heroImage: listings.heroImage, hasCutout: orm.sql<boolean>`${hasCutout}` })
+    .select({ id: listings.id, source: listings.source, images: listings.images, heroImage: listings.heroImage, hasCutout: orm.sql<boolean>`${hasCutout}` })
     .from(listings)
     .where(
       orm.and(
@@ -38,7 +38,7 @@ export async function runCutouts(): Promise<void> {
     try {
       let hero = r.heroImage;
       if (hero === null) {
-        const pick = await pickHero(r.images);
+        const pick = await pickHero(r.images, r.source);
         hero = pick.index;
         if (pick.certain) await db().update(listings).set({ heroImage: hero }).where(orm.eq(listings.id, r.id));
       }

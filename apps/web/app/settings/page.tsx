@@ -21,6 +21,15 @@ const SOURCE_NAMES: Record<string, string> = {
   pinterest: "Pinterest boards",
   judge: "Taste judge (Claude)",
   digest: "Daily digest email",
+  poshmark: "Poshmark",
+  vinted: "Vinted",
+  recheck: "Resale recheck",
+  watches: "Watchlist",
+  gate: "Gate (sizes and rules)",
+  embed: "Image embeddings",
+  score: "Taste scoring",
+  admit: "Admission",
+  cutouts: "Background removal",
 };
 
 export default async function SettingsPage() {
@@ -111,8 +120,12 @@ export default async function SettingsPage() {
             <div key={s.source} className="flex flex-col border-b border-divider py-1">
               <div className="flex justify-between text-[13px]">
                 <span>{SOURCE_NAMES[s.source] ?? s.source}</span>
-                <span className={`text-[11px] italic ${s.failing.length ? "text-accent-ink" : "text-ink-muted"}`}>
-                  {s.failing.length ? `${s.failing.length} of ${s.targets} failing` : `ok${s.lastFinishedAt ? `, ${timeAgo(s.lastFinishedAt)}` : ""}`}
+                <span className={`text-[11px] italic ${s.failing.length || s.stale ? "text-accent-ink" : "text-ink-muted"}`}>
+                  {s.failing.length
+                    ? `${s.failing.length} failing`
+                    : s.stale
+                      ? `stale, last ran ${s.lastFinishedAt ? timeAgo(s.lastFinishedAt) : "never"}`
+                      : `ok${s.lastFinishedAt ? `, ${timeAgo(s.lastFinishedAt)}` : ""}`}
                 </span>
               </div>
               {s.failing.slice(0, 2).map((f) => (

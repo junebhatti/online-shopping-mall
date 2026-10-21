@@ -38,7 +38,7 @@ export function tileQuery() {
       l: listings,
       saved: orm.sql<boolean>`${saves.id} is not null`,
       verdict: ratings.verdict,
-      hasCutout: orm.sql<boolean>`${cutouts.listingId} is not null`,
+      cutoutAt: cutouts.createdAt,
     })
     .from(listings)
     .leftJoin(saves, orm.eq(saves.listingId, listings.id))
@@ -48,7 +48,8 @@ export function tileQuery() {
 
 type Row = Awaited<ReturnType<typeof tileQuery>>[number];
 
-export function toTile({ l, saved, verdict, hasCutout }: Row): Tile {
+export function toTile({ l, saved, verdict, cutoutAt }: Row): Tile {
+  const hasCutout = cutoutAt !== null;
   const a = l.attributes;
   const color = a.colors?.[0];
   const meta = l.isUsed
@@ -72,8 +73,8 @@ export function toTile({ l, saved, verdict, hasCutout }: Row): Tile {
     category: l.category,
     isUsed: l.isUsed,
     meta,
-    // URL changes once a cutout exists, so a cached source-photo redirect is never reused.
-    image: `/img/${l.id}${hasCutout ? "?cut=1" : ""}`,
+    // The URL carries the cutout's version, so a cached source photo or an older cutout is never reused.
+    image: `/img/${l.id}${cutoutAt ? `?v=${cutoutAt.getTime()}` : ""}`,
     hasCutout,
     isNew: Date.now() - l.firstSeenAt.getTime() < 24 * 3_600_000,
     saved,

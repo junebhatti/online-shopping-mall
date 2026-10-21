@@ -163,7 +163,15 @@ export type SourceStatus = {
   ok: number;
   failing: { target: string | null; error: string }[];
   lastFinishedAt: Date | null;
+  /** No finished run for 3x the source's schedule: the worker is probably down. */
+  stale: boolean;
 };
+
+/** Hours between runs per source (apps/worker/src/main.ts); pipeline steps follow the 2-hour resale cycle. */
+const CADENCE_HOURS: Record<string, number> = { pinterest: 24, shopify: 12, yoox: 12, digest: 24 };
+/** Sources that bring in listings, as opposed to pipeline steps. */
+export const SHOPPING_SOURCES = new Set(["shopify", "yoox", "ebay", "grailed", "poshmark", "vinted"]);
+const JOB_TARGET = "(job)";
 
 /** Latest run per source + target, rolled up per source for Settings and the sale-watch strip. */
 export async function sourceStatus(): Promise<SourceStatus[]> {
@@ -171,14 +179,27 @@ export async function sourceStatus(): Promise<SourceStatus[]> {
     .selectDistinctOn([sourceRuns.source, sourceRuns.target])
     .from(sourceRuns)
     .orderBy(sourceRuns.source, sourceRuns.target, orm.desc(sourceRuns.id));
+  const now = Date.now();
   const bySource = new Map<string, SourceStatus>();
   for (const r of latest) {
-    const s = bySource.get(r.source) ?? { source: r.source, targets: 0, ok: 0, failing: [], lastFinishedAt: null };
-    s.targets++;
-    if (r.status === "ok") s.ok++;
-    else if (r.status === "error") s.failing.push({ target: r.target, error: r.error ?? "unknown error" });
+    // A target that hasn't run in a week was removed from config; its last outcome no longer means anything.
+    const lastActivity = (r.finishedAt ?? r.startedAt).getTime();
+    if (now - lastActivity > 7 * 86_400_000) continue;
+    const s = bySource.get(r.source) ?? { source: r.source, targets: 0, ok: 0, failing: [], lastFinishedAt: null, stale: false };
+    // The job-level row records whole-job failures; it isn't a store or search of its own.
+    if (r.target !== JOB_TARGET) s.targets++;
+    const stuck = r.status === "running" && now - r.startedAt.getTime() > 3_600_000;
+    if (r.status === "ok") {
+      if (r.target !== JOB_TARGET) s.ok++;
+    } else if (r.status === "error" || stuck) {
+      s.failing.push({ target: r.target, error: stuck ? "started over an hour ago and never finished (worker killed?)" : (r.error ?? "unknown error") });
+    }
     if (r.finishedAt && (!s.lastFinishedAt || r.finishedAt > s.lastFinishedAt)) s.lastFinishedAt = r.finishedAt;
     bySource.set(r.source, s);
+  }
+  for (const s of bySource.values()) {
+    const cadence = (CADENCE_HOURS[s.source] ?? 2) * 3_600_000;
+    s.stale = !s.lastFinishedAt || now - s.lastFinishedAt.getTime() > 3 * cadence;
   }
   return [...bySource.values()];
 }
