@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db, listings, orm } from "@mall/db";
 import { loadTaste, readTasteProfile } from "@mall/config";
 import { fetchImage } from "../images/fetch.ts";
+import { markMediaFailed, mediaNotRecentlyFailed } from "../images/media-failures.ts";
 import { log } from "../log.ts";
 import { withRun } from "../runs.ts";
 
@@ -45,6 +46,7 @@ export async function runJudge(): Promise<void> {
           orm.eq(listings.status, "active"),
           orm.isNull(listings.judgeVerdict),
           orm.isNotNull(listings.score),
+          mediaNotRecentlyFailed,
         ),
       )
       // Pieces already in the feed (admitted before the judge worked) are judged first.
@@ -53,12 +55,25 @@ export async function runJudge(): Promise<void> {
     counts.fetched = candidates.length;
     if (candidates.length === 0) return;
 
+    // Names come "from the photo", so a piece whose photo won't load waits for a later cycle.
     const content: Anthropic.ContentBlockParam[] = [];
+    const sent: typeof candidates = [];
     for (const l of candidates) {
-      const image = l.images[0] ? await thumbnail(l.images[0]) : null;
-      if (image) content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: image } });
+      const url = l.images[l.heroImage ?? 0] ?? l.images[0];
+      const image = url ? await thumbnail(url) : null;
+      if (!image) {
+        await markMediaFailed(l.id);
+        continue;
+      }
+      content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: image } });
       content.push({ type: "text", text: describe(l) });
+      sent.push(l);
     }
+    if (sent.length === 0) throw new Error(`none of ${candidates.length} candidate photos could be fetched`);
+    content.push({
+      type: "text",
+      text: `Return exactly ${sent.length} entries, one for each of these listing ids: ${sent.map((l) => l.id).join(", ")}.`,
+    });
 
     const response = await client.messages.parse({
       model: taste.judge.model,
@@ -77,7 +92,7 @@ export async function runJudge(): Promise<void> {
     const parsed = response.parsed_output;
     if (!parsed) throw new Error("Judge returned no parseable verdicts");
 
-    const ids = new Set(candidates.map((c) => c.id));
+    const ids = new Set(sent.map((c) => c.id));
     for (const v of parsed.items) {
       if (!ids.has(v.id)) {
         log.warn(`judge returned unknown id ${v.id}`);
@@ -93,6 +108,10 @@ export async function runJudge(): Promise<void> {
         })
         .where(orm.eq(listings.id, v.id));
       counts.updated++;
+    }
+    // An empty or mostly missing answer would leave admission waiting on verdicts that never come.
+    if (counts.updated < Math.ceil(sent.length / 2)) {
+      throw new Error(`judge returned verdicts for only ${counts.updated} of ${sent.length} pieces`);
     }
     log.info("judge usage", response.usage);
   });
@@ -119,7 +138,7 @@ async function thumbnail(url: string): Promise<string | null> {
     const buf = await fetchImage(url, 512);
     return (await sharp(buf).resize(384, 384, { fit: "inside" }).jpeg({ quality: 80 }).toBuffer()).toString("base64");
   } catch (err) {
-    log.warn(`judge: image unavailable, judging on text only (${url})`, err instanceof Error ? err.message : err);
+    log.warn(`judge: photo unavailable, piece skipped until tomorrow (${url})`, err instanceof Error ? err.message : err);
     return null;
   }
 }

@@ -2,6 +2,7 @@ import { cutouts, db, listings, orm } from "@mall/db";
 import { log } from "../log.ts";
 import { makeCutout } from "./cutout.ts";
 import { pickHero } from "./hero.ts";
+import { assertMostlyWorked, markMediaFailed, mediaNotRecentlyFailed } from "./media-failures.ts";
 
 const PER_CYCLE = 60;
 
@@ -20,6 +21,7 @@ export async function runCutouts(): Promise<void> {
         orm.eq(listings.gate, "passed"),
         orm.eq(listings.status, "active"),
         orm.sql`cardinality(${listings.images}) > 0`,
+        mediaNotRecentlyFailed,
         orm.or(
           orm.sql`not ${hasCutout}`,
           orm.and(orm.isNotNull(listings.admittedAt), orm.isNull(listings.heroImage)),
@@ -31,10 +33,15 @@ export async function runCutouts(): Promise<void> {
 
   let made = 0;
   let redone = 0;
+  let failed = 0;
   for (const r of rows) {
     try {
-      const hero = r.heroImage ?? (await pickHero(r.images));
-      if (r.heroImage === null) await db().update(listings).set({ heroImage: hero }).where(orm.eq(listings.id, r.id));
+      let hero = r.heroImage;
+      if (hero === null) {
+        const pick = await pickHero(r.images);
+        hero = pick.index;
+        if (pick.certain) await db().update(listings).set({ heroImage: hero }).where(orm.eq(listings.id, r.id));
+      }
       // An existing cutout from image 0 is still right when the hero is image 0.
       if (r.hasCutout && hero === 0) continue;
       const url = r.images[hero] ?? r.images[0]!;
@@ -46,8 +53,11 @@ export async function runCutouts(): Promise<void> {
       if (r.hasCutout) redone++;
       else made++;
     } catch (err) {
+      failed++;
       log.warn(`cutout failed for listing ${r.id}`, err instanceof Error ? err.message : err);
+      await markMediaFailed(r.id);
     }
   }
-  log.info(`cutouts: ${made} new, ${redone} redone from a cleaner shot, ${rows.length} checked`);
+  assertMostlyWorked("cutouts", rows.length, failed);
+  log.info(`cutouts: ${made} new, ${redone} redone from a cleaner shot, ${failed} failed, ${rows.length} checked`);
 }

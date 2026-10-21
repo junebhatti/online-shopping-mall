@@ -9,13 +9,14 @@ let prompts: Promise<number[][]> | undefined;
 
 /**
  * Index of the cleanest product shot among the first few images: the one that looks most like a
- * flat lay or hanger shot and least like a person wearing it. Falls back to 0 on any image failure.
+ * flat lay or hanger shot and least like a person wearing it. `certain` is false when some candidates failed to load.
  */
-export async function pickHero(images: string[]): Promise<number> {
-  if (images.length < 2) return 0;
+export async function pickHero(images: string[]): Promise<{ index: number; certain: boolean }> {
+  if (images.length < 2) return { index: 0, certain: true };
   const [flat, worn] = await (prompts ??= embedTexts([FLAT, WORN]));
   let best = 0;
   let bestScore = -Infinity;
+  let skipped = 0;
   for (const [i, url] of images.slice(0, MAX_CANDIDATES).entries()) {
     let v: number[];
     try {
@@ -23,6 +24,7 @@ export async function pickHero(images: string[]): Promise<number> {
     } catch (err) {
       // An unreachable alternate shot just isn't a candidate; image 0 remains the fallback.
       log.warn(`hero: skipped image ${i} (${url})`, err instanceof Error ? err.message : err);
+      skipped++;
       continue;
     }
     const score = cosine(v, flat!) - cosine(v, worn!);
@@ -31,5 +33,6 @@ export async function pickHero(images: string[]): Promise<number> {
       best = i;
     }
   }
-  return best;
+  // A pick made with candidates missing isn't saved, so it's tried again next cycle.
+  return { index: best, certain: skipped === 0 };
 }
