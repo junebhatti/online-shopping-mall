@@ -62,7 +62,8 @@ export function toTile({ l, saved, verdict, hasCutout }: Row): Tile {
     id: l.id,
     // "Vintage" only when the listing says so; a used modern piece is just used.
     brand: /\bvintage\b/i.test(l.title) && !/^vintage\b/i.test(l.brand) ? `Vintage ${l.brand}` : l.brand,
-    name: displayName(l.title),
+    // Some stores title by category only ("Cotton jackets"); the judge's name from the photo reads better.
+    name: l.displayName && isGenericTitle(l.source, l.title) ? l.displayName : displayName(l.title),
     store: l.store,
     url: l.url,
     priceCents: l.priceCents,
@@ -81,4 +82,9 @@ export function toTile({ l, saved, verdict, hasCutout }: Row): Tile {
     firstSeenAt: l.firstSeenAt,
     admittedAt: l.admittedAt,
   };
+}
+
+/** Yoox titles are "<material> <category>"; very short titles elsewhere say as little. */
+export function isGenericTitle(source: string, title: string): boolean {
+  return source === "yoox" || title.trim().split(/\s+/).length <= 2;
 }

@@ -4,6 +4,7 @@ import { logout } from "@/app/actions";
 import { isOwner, ownerLoginConfigured } from "@/lib/auth";
 import { timeAgo } from "@/lib/format";
 import { countsByStore, ratedCount, sourceStatus } from "@/lib/queries";
+import { brandSuggestions } from "@/lib/suggest";
 
 const GROUPS = [
   { key: "clothing", label: "Clothing", note: "new stock" },
@@ -27,7 +28,13 @@ export default async function SettingsPage() {
   const rules = loadRules();
   const taste = loadTaste();
   const boards = loadPinterest().boards;
-  const [counts, status, rated, owner] = await Promise.all([countsByStore(), sourceStatus(), ratedCount(), isOwner()]);
+  const [counts, status, rated, owner, suggestions] = await Promise.all([
+    countsByStore(),
+    sourceStatus(),
+    ratedCount(),
+    isOwner(),
+    brandSuggestions(),
+  ]);
 
   const grouped = GROUPS.map((g) => ({
     ...g,
@@ -71,6 +78,30 @@ export default async function SettingsPage() {
             })}
           </div>
         ))}
+        {suggestions.length ? (
+          <div className="flex flex-col">
+            <div className="flex items-baseline gap-2.5 border-b border-rule pb-1.5">
+              <span className="caps text-[10px]">Brands you might add</span>
+              <span className="text-[11px] italic text-ink-muted">keep showing up in what you rate and what the judge likes</span>
+            </div>
+            {suggestions.map((b) => (
+              <Link
+                key={b.brand}
+                href={`/?brand=${encodeURIComponent(b.brand)}`}
+                className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_60px] items-baseline gap-s4 border-b border-divider py-[9px] transition-colors hover:text-accent-hover"
+              >
+                <span className="font-heading text-[19px]">{b.brand}</span>
+                <span className="text-[12px] italic text-ink-muted">
+                  {[b.wear ? `${b.wear} would wear` : null, b.saved ? `${b.saved} saved` : null, b.strongFits ? `${b.strongFits} strong judge fits` : null]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
+                <span className="tnum text-right text-[11px] text-ink-muted">{b.score}</span>
+              </Link>
+            ))}
+            <p className="m-0 pt-1.5 text-[11px] italic text-ink-muted">Add one by putting it in config/brands.yaml.</p>
+          </div>
+        ) : null}
       </div>
 
       <aside className="flex flex-col gap-s6 pt-3">

@@ -92,6 +92,10 @@ export const listings = pgTable(
     judgeVerdict: text("judge_verdict").$type<"admit" | "skip">(),
     judgeFit: integer("judge_fit"),
     judgeNote: text("judge_note"),
+    /** Short descriptive name from the judge, used when the store's title is generic ("Cotton jackets"). */
+    displayName: text("display_name"),
+    /** Which of `images` is the cleanest product shot (flat lay over on-model); cutouts use it. */
+    heroImage: integer("hero_image"),
     admittedAt: timestamp("admitted_at", { withTimezone: true }),
 
     firstSeenAt: timestamp("first_seen_at", { withTimezone: true }).notNull().defaultNow(),
@@ -208,4 +212,15 @@ export const sourceRuns = pgTable(
     error: text("error"),
   },
   (t) => [index("source_runs_source_idx").on(t.source, t.startedAt)],
+);
+
+/** Failed owner logins, for rate limiting. Rows older than the window are deleted on each attempt. */
+export const loginAttempts = pgTable(
+  "login_attempts",
+  {
+    id: serial("id").primaryKey(),
+    ip: text("ip").notNull(),
+    at: timestamp("at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("login_attempts_ip_idx").on(t.ip, t.at)],
 );

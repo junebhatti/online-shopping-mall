@@ -41,7 +41,7 @@ export async function buildDigest(siteUrl: string | undefined, now = new Date())
   const item = (l: typeof listings.$inferSelect, hasCutout: boolean, wasCents?: number): DigestItem => ({
     id: l.id,
     brand: l.brand,
-    name: name(l.title),
+    name: l.displayName && (l.source === "yoox" || l.title.trim().split(/\s+/).length <= 2) ? l.displayName : name(l.title),
     store: l.store,
     priceCents: l.priceCents,
     wasCents,

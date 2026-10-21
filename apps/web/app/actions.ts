@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { endOwnerSession, ownerLoginConfigured, passwordMatches, requireOwner, startOwnerSession } from "@/lib/auth";
+import { clearFailedLogins, clientIp, loginBlocked, recordFailedLogin } from "@/lib/rate-limit";
 
 const listingId = z.number().int().positive();
 const verdict = z.enum(["wear", "not", "inspo"]).nullable();
@@ -44,8 +45,14 @@ export type LoginState = { error?: string };
 
 export async function login(_prev: LoginState, form: FormData): Promise<LoginState> {
   if (!ownerLoginConfigured()) return { error: "Set OWNER_PASSWORD in .env.local first." };
+  const ip = await clientIp();
+  if (await loginBlocked(ip)) return { error: "Too many tries. Wait 15 minutes and try again." };
   const password = z.string().min(1).max(200).safeParse(form.get("password"));
-  if (!password.success || !passwordMatches(password.data)) return { error: "That password isn't right." };
+  if (!password.success || !passwordMatches(password.data)) {
+    await recordFailedLogin(ip);
+    return { error: "That password isn't right." };
+  }
+  await clearFailedLogins(ip);
   await startOwnerSession();
   const next = String(form.get("next") ?? "/");
   redirect(next.startsWith("/") && !next.startsWith("//") ? next : "/");

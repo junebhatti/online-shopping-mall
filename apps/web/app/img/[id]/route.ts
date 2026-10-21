@@ -13,8 +13,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     });
   }
 
-  const [listing] = await db().select({ images: listings.images }).from(listings).where(orm.eq(listings.id, id));
-  const src = listing?.images[0];
+  const [listing] = await db()
+    .select({ images: listings.images, hero: listings.heroImage })
+    .from(listings)
+    .where(orm.eq(listings.id, id));
+  const src = listing?.images[listing.hero ?? 0] ?? listing?.images[0];
   if (!src) return new Response("Not found", { status: 404 });
   return new Response(null, {
     status: 302,

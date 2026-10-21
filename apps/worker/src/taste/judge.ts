@@ -15,6 +15,7 @@ const Verdicts = z.object({
       verdict: z.enum(["admit", "skip"]),
       fit: z.number(),
       note: z.string(),
+      name: z.string(),
     }),
   ),
 });
@@ -26,6 +27,8 @@ Be selective: the feed admits about 20 pieces a day and missing something is bet
 Admit only pieces that fit the profile's silhouettes, palette, materials and references.
 Skip anything the profile rules out, anything generic or logo-led, and anything you would not expect them to wear.
 "fit" is 1-10 for how well it matches the profile. "note" is under 12 words, for the owner, about why.
+"name" is what the piece is, 2-5 words, from the photo: colour, material or detail, and garment type,
+e.g. "Navy canvas chore jacket" or "Grey pinstripe pleated trousers". No brand, no size.
 Return one entry per listing id you were given.`;
 
 /** Ask Claude to judge the highest-scoring passed listings that haven't been judged yet. */
@@ -82,7 +85,12 @@ export async function runJudge(): Promise<void> {
       }
       await db()
         .update(listings)
-        .set({ judgeVerdict: v.verdict, judgeFit: Math.max(1, Math.min(10, Math.round(v.fit))), judgeNote: v.note.slice(0, 200) })
+        .set({
+          judgeVerdict: v.verdict,
+          judgeFit: Math.max(1, Math.min(10, Math.round(v.fit))),
+          judgeNote: v.note.slice(0, 200),
+          displayName: v.name.trim().slice(0, 60) || null,
+        })
         .where(orm.eq(listings.id, v.id));
       counts.updated++;
     }

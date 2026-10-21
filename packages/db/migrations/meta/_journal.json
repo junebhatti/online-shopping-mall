@@ -15,6 +15,13 @@
       "when": 1792507532789,
       "tag": "0001_long_havok",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792550705344,
+      "tag": "0002_easy_peter_quill",
+      "breakpoints": true
     }
   ]
 }
