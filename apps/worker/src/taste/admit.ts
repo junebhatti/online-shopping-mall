@@ -11,6 +11,7 @@ export async function runAdmit(): Promise<void> {
   const taste = loadTaste();
   const since = new Date(Date.now() - 24 * 3_600_000);
   const judgeWorks = await judgeIsWorking();
+  await dropGatedOut();
   if (judgeWorks) await dropJudgedOut(taste.judge.min_fit);
 
   const [{ first, recent }] = (await db()
@@ -109,4 +110,21 @@ async function dropJudgedOut(minFit: number): Promise<void> {
     )
     .returning({ id: listings.id });
   if (dropped.length) log.info(`admit: ${dropped.length} pieces left the feed after the judge scored them below ${minFit}`);
+}
+
+/** Feed pieces that fail the gate now (rules tightened, size sold out, price rose) leave the feed unless saved or rated. */
+async function dropGatedOut(): Promise<void> {
+  const dropped = await db()
+    .update(listings)
+    .set({ admittedAt: null })
+    .where(
+      orm.and(
+        orm.isNotNull(listings.admittedAt),
+        orm.eq(listings.gate, "rejected"),
+        orm.sql`not exists (select 1 from ${saves} s where s.listing_id = ${listings.id})`,
+        orm.sql`not exists (select 1 from ${ratings} r where r.listing_id = ${listings.id})`,
+      ),
+    )
+    .returning({ id: listings.id });
+  if (dropped.length) log.info(`admit: ${dropped.length} pieces left the feed because they no longer pass the gate`);
 }

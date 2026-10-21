@@ -69,6 +69,7 @@ const rulesSchema = z.object({
     top_measurements: z.object({ length_in: range, chest_in: range }),
   }),
   price_ceilings_usd: z.record(z.string(), z.number()),
+  resale_price_ceilings_usd: z.record(z.string(), z.number()),
   admission: z.object({ daily_limit: z.number(), rating_session_size: z.number() }),
   resale: z.object({
     max_shipping_usd: z.number(),
@@ -84,9 +85,14 @@ export type Rules = z.infer<typeof rulesSchema>;
 
 export const loadRules = () => loadYaml("config/rules.yaml", rulesSchema);
 
-export function priceCeilingCents(rules: Rules, category: Category): number {
-  const usd = rules.price_ceilings_usd[category] ?? rules.price_ceilings_usd.other;
-  if (usd === undefined) throw new Error(`config/rules.yaml has no price ceiling for "${category}" or "other"`);
+/** Marketplaces where pieces are secondhand (even new-with-tags ones), as opposed to brand stores and Yoox. */
+export const RESALE_SOURCES = new Set(["grailed", "poshmark", "vinted", "ebay"]);
+
+export function priceCeilingCents(rules: Rules, category: Category, resale = false): number {
+  const table = resale ? rules.resale_price_ceilings_usd : rules.price_ceilings_usd;
+  const usd = table[category] ?? table.other;
+  const name = resale ? "resale_price_ceilings_usd" : "price_ceilings_usd";
+  if (usd === undefined) throw new Error(`config/rules.yaml ${name} has no ceiling for "${category}" or "other"`);
   return usd * 100;
 }
 

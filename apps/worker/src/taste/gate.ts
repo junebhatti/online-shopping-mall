@@ -1,5 +1,5 @@
 import type { Category, ListingAttributes } from "@mall/db";
-import { priceCeilingCents, type BrandConfig, type Rules } from "@mall/config";
+import { RESALE_SOURCES, priceCeilingCents, type BrandConfig, type Rules } from "@mall/config";
 
 export type GateInput = {
   source: string;
@@ -33,7 +33,10 @@ export function gate(l: GateInput, rules: Rules, brand: BrandConfig | undefined)
   const skip = rules.skip_items.find((w) => hasWord(l.title, w));
   if (skip) return fail(`skipped item: ${skip}`);
 
-  if (l.priceCents > priceCeilingCents(rules, l.category)) return fail(`over ${l.category} ceiling`);
+  const resale = RESALE_SOURCES.has(l.source);
+  if (l.priceCents > priceCeilingCents(rules, l.category, resale)) {
+    return fail(`over ${resale ? "secondhand " : ""}${l.category} ceiling`);
+  }
   if (brand?.sale_only && !l.retailCents) return fail("brand is sale-only");
 
   const loud = rules.loud_colors.find((c) => hasWord(`${text} ${(l.attributes.colors ?? []).join(" ")}`, c));

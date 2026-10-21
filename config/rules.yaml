@@ -27,6 +27,24 @@ price_ceilings_usd:
   underwear: 60     # guess
   other: 200        # guess
 
+# Secondhand (Grailed, Poshmark, Vinted, eBay, including new-with-tags there) should be much cheaper than
+# new. Roughly 40% of the new ceilings; Junaid, 2026-10-21: "anything second hand should be much cheaper".
+resale_price_ceilings_usd:
+  tee: 30
+  long_sleeve: 35
+  shirt: 45
+  sweatshirt: 45
+  knit: 70
+  pants: 60
+  denim: 70
+  shorts: 30
+  outerwear: 120
+  shoes: 80
+  accessory: 40
+  fragrance: 200
+  underwear: 0      # never secondhand
+  other: 50
+
 admission:
   daily_limit: 20          # new items admitted to the feed per day
   rating_session_size: 30  # items in each daily rating session (week one)

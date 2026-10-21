@@ -47,6 +47,8 @@ Workwear / Americana. Ivy / prep. Quiet luxury / minimal. Gorpcore / outdoor.
   tees and quarter zips. Lululemon and Alo only when on sale.
 - **Fragrance favorites:** Jean Paul Gaultier, Margiela Replica, Jo Malone Wood Sage & Sea Salt,
   Baccarat Rouge 540 (Maison Francis Kurkdjian; add as a fragrance brand).
+- **Secondhand must be much cheaper than new** (Junaid, 2026-10-21). A used piece priced near
+  what it costs new is a skip; config/rules.yaml has separate secondhand ceilings, about 40% of new.
 - **Price ceilings (new, per piece):** tees $80, pants $250, outerwear $500. Luxury only on sale.
 - **Denim:** raw/selvedge and washed vintage. No black denim called out.
 - **Palette:** earth tones (olive, brown, tan, rust, khaki) and navy/indigo.

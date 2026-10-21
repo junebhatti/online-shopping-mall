@@ -66,6 +66,9 @@ describe("gate", () => {
   });
   it("enforces ceilings, shipping, region and loud colors", () => {
     expect(gate({ ...base, category: "tee", priceCents: 9000 }, rules, undefined).passed).toBe(false);
+    // Secondhand is held to much lower ceilings than the same piece new.
+    expect(gate({ ...base, category: "tee", priceCents: 4500 }, rules, undefined)).toEqual({ passed: false, reason: "over secondhand tee ceiling" });
+    expect(gate({ ...base, category: "tee", priceCents: 4500, source: "shopify", isUsed: false, condition: "new" }, rules, undefined).passed).toBe(true);
     expect(gate({ ...base, attributes: { ...base.attributes, shippingCents: 2500 } }, rules, undefined).passed).toBe(false);
     expect(gate({ ...base, attributes: { ...base.attributes, sellerLocation: "GB" } }, rules, undefined).passed).toBe(false);
     expect(gate({ ...base, title: "Neon green windbreaker" }, rules, undefined).passed).toBe(false);
