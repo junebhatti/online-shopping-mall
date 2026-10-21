@@ -43,8 +43,17 @@ Read PLAN.md first (the Phases section has per-source status).
 
 ## Next to build
 
-- Done 2026-10-20: judge-written names for generic titles, flat-lay hero shots before cutouts, brand suggestions
-  in Settings, login rate limiting.
+- Done 2026-10-20: judge-written names for generic titles, flat-lay hero shots before cutouts (brand stores only),
+  brand suggestions in Settings, login rate limiting.
+- Done 2026-10-21, from a silent-failure review: isolated worker jobs with recorded failures, guards against
+  empty or truncated catalog pulls wiping Shopify/Yoox, resale sources fail loudly when empty, feed and saved
+  resale pieces re-checked (Grailed via its live index, Poshmark via its post endpoint, Vinted ages out after
+  14 days), judge/embed/cutout handling for dead images and partial answers, a Needs-attention section in the
+  digest, stale and partial status on the site, versioned cutout URLs.
+- **Grailed blocks this Mac** for its shop page and listing API (403) since the evening of 2026-10-20; Algolia
+  search still works with the key in config/sources.yaml. New Grailed pieces are stored without measurements
+  while that lasts, and Settings shows it. Railway's IP may not be blocked.
+- Not done from the review: eBay doesn't record skipped searches as a run (it rotates order instead).
 - Vinted gives no measurements or shipping in search; consider a detail fetch only if it stays reliable.
 - Rebuy shelf and home-goods discovery (PLAN.md "Beyond clothing") once clothing is settled.
 
